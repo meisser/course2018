@@ -53,7 +53,7 @@ public class Hermit extends Consumer implements IFounder {
 		// Hermit does not trade, produces instead for himself
 		produce(getInventory());
 	}
-	
+
 	private void produce(Inventory inventory) {
 		IStock currentManhours = inventory.getStock(HermitConfiguration.MAN_HOUR);
 
@@ -61,7 +61,7 @@ public class Hermit extends Consumer implements IFounder {
 		// getUtilityFunction().getWeights() might help you finding out
 		// how the consumer weighs the utility of potatoes and of leisure
 		// time (man-hours) relative to each other.
-		double plannedLeisureTime = currentManhours.getAmount() * 0.5;
+		double plannedLeisureTime = currentManhours.getAmount() * (1.0 - workFraction);
 		workFraction = workFraction + 0.005;
 
 		// The hide function creates allows to hide parts of the inventory from the
@@ -84,10 +84,10 @@ public class Hermit extends Consumer implements IFounder {
 		HermitConfiguration config = new HermitConfiguration(null, 0);
 		Endowment endowment = config.createEndowment();
 		IUtility utilityFunction = config.create(0);
-		
+
 		Hermit bob = new Hermit(new SimpleAgentIdGenerator(), endowment, utilityFunction);
 		int endOfTime = 100; // let world end after 100 days
-		for (int t=0; t<endOfTime; t++) {
+		for (int t = 0; t < endOfTime; t++) {
 			bob.collectDailyEndowment();
 			bob.considerCreatingFirm(null, config, null);
 			bob.tradeGoods(null);

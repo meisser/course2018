@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.agent.IAgents;
-import com.agentecon.configuration.BasicCapitalConfiguration;
 import com.agentecon.configuration.IConfiguration;
 import com.agentecon.events.SimEvent;
 import com.agentecon.exercises.HermitConfiguration;
