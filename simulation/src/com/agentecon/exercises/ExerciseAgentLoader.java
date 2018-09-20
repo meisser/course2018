@@ -22,7 +22,7 @@ import com.agentecon.sim.SimulationConfig;
 
 public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 
-	private static final Collection<String> TEAMS = createRepos(1, 2, 3, 5, 7, 10);
+	private static final Collection<String> TEAMS = createRepos(0, 1, 2, 3, 4, 5);
 
 	private IAgentFactory defaultFactory;
 
@@ -43,7 +43,7 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 		ArrayList<String> repos = new ArrayList<>();
 		for (int i : numbers) {
 			String number = Integer.toString(i);
-			repos.add("team" + (number.length() == 1 ? "00" : "0") + number);
+			repos.add("team10" + number);
 		}
 		return repos;
 	}
