@@ -20,7 +20,7 @@ $max\ U(h_{work}) = log(24 - h_{work}) + log((h_{work}-6)^{0.6} x_{land}^{0.2})$
 
 If you want, you can solve this problem mathematically. Alternatively, you can also just play around with your [Hermit class](../src/com/agentecon/exercise1/Hermit.java) to find out how to achieve a better utility. To do so, adjust the function 'produce', in which the hermit decides how much time to spend on growing food.
 
-It is possible to edit this class directly here on github.com and then check the [resulting ranking online](http://meissereconomics.com/vis/simulation?sim=ex1-hermit-1). However, in practice, it is much more efficient to edit and test a local copy of your agents before uploading (pushing) them to github, a process which is described [here](http://meissereconomics.com/course/setup). Note that the ranking is not based on total lifetime utility, but on an exponentially moving average [as defined here](https://github.com/meisser/course/blob/master/arena/src/com/agentecon/web/methods/UtilityRanking.java), whereas the score s for day t is calculated as follows:
+It is possible to edit this class directly here on github.com and then check the [resulting ranking online](http://meissereconomics.com/vis/simulation?sim=ex1-hermit-2). However, in practice, it is much more efficient to edit and test a local copy of your agents before uploading (pushing) them to github, a process which is described [here](http://meissereconomics.com/course/setup). Note that the ranking is not based on total lifetime utility, but on an exponentially moving average [as defined here](https://github.com/meisser/course/blob/master/arena/src/com/agentecon/web/methods/UtilityRanking.java), whereas the score s for day t is calculated as follows:
 
 $s_t = 0.02 u_t + 0.98 s_{t-1}$
 
