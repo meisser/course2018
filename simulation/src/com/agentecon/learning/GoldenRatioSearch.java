@@ -1,6 +1,6 @@
 package com.agentecon.learning;
 
-public class GoldenRatioSearch implements IControl{
+public class GoldenRatioSearch implements IControl {
 
 	private static final double GOLDEN_RATIO = (Math.sqrt(5) - 1) / 2;
 

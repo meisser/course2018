@@ -33,9 +33,7 @@ import com.agentecon.research.IInnovation;
 public class Hermit extends Consumer implements IFounder {
 
 	private IProductionFunction prodFun;
-	
-	// we start at our best guess of working 12 hours per day
-	private double workFraction = 0.3;
+	private double workFraction = 0.2;
 
 	public Hermit(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
@@ -59,22 +57,12 @@ public class Hermit extends Consumer implements IFounder {
 	private void produce(Inventory inventory) {
 		IStock currentManhours = inventory.getStock(HermitConfiguration.MAN_HOUR);
 
-		//double[] ws = getUtilityFunction().getWeights();
-		//System.out.println(ws[0] + "   " + ws[1]);
-
 		// Play here. Maybe you find a better fraction than 60%?
 		// getUtilityFunction().getWeights() might help you finding out
 		// how the consumer weighs the utility of potatoes and of leisure
 		// time (man-hours) relative to each other.
 		double plannedLeisureTime = currentManhours.getAmount() * (1.0 - workFraction);
-
-		// gradient ascent optimization step
-		double HoursOfWork = workFraction * currentManhours.getAmount();
-		HoursOfWork = HoursOfWork + 0.1*(20.4-1.6*HoursOfWork);
-		
-		workFraction = HoursOfWork / currentManhours.getAmount(); 		
-
-		//System.out.println("Work fraction: " + workFraction);
+		workFraction = workFraction + 0.005;
 
 		// The hide function creates allows to hide parts of the inventory from the
 		// production function, preserving it for later consumption.
@@ -98,28 +86,6 @@ public class Hermit extends Consumer implements IFounder {
 		IUtility utilityFunction = config.create(0);
 
 		Hermit bob = new Hermit(new SimpleAgentIdGenerator(), endowment, utilityFunction);
-
-
-		// optimization loop (in case we would like to optimize before actually playing)
-		
-		//double utility = 0;
-		//double old_utility = 1;
-		//double convergence_epsilon = 1e-6;
-		//int iteration = 1;
-
-		//while (Math.abs(new_utility - old_utility) > convergence_epsilon) {
-		//	System.out.println("Iteration: " + iteration);
-		//	old_utility = utility; 
-		//	bob.collectDailyEndowment();
-		//	bob.considerCreatingFirm(null, config, null);
-		//	bob.tradeGoods(null);
-		//	utility = bob.consume();
-		//	System.out.println("Old utility: " + old_utility);
-		//	System.out.println("New utility: " + new_utility + "\n");
-		//	iteration ++;
-		//}
-		
-		
 		int endOfTime = 100; // let world end after 100 days
 		for (int t = 0; t < endOfTime; t++) {
 			bob.collectDailyEndowment();
@@ -128,7 +94,6 @@ public class Hermit extends Consumer implements IFounder {
 			List<Quantity> inventoryBeforeConsumption = bob.getInventory().getQuantities();
 			double utility = bob.consume();
 			System.out.println("Bob achieved a utility of " + utility + " on day " + t + ". Inventory before consumption was: " + inventoryBeforeConsumption);
-		
 		}
 	}
 
