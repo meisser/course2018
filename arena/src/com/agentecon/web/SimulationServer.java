@@ -42,19 +42,19 @@ public class SimulationServer extends VisServer {
 			try {
 				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "master", true));
 				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex1-hermit-2", true));
-				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex2-farmer-1", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex3-money", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex4-growth-6", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex5-stocks-2", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex5-market-maker-chaos", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex6-flow", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex7-equality-basic-2", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex7-equality-util-variation", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex7-equality-longer-life", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex9-basic-5", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex9-competitive-4", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex9-only-default-farms-2", true));
-//				this.simulations.add(new GitSimulationHandle("meisser", "course", "ex9-consumer-owned-funds-5", true));
+				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex2-farmer-2", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex3-money", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex4-growth-6", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex5-stocks-2", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex5-market-maker-chaos", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex6-flow", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex7-equality-basic-2", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex7-equality-util-variation", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex7-equality-longer-life", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex9-basic-5", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex9-competitive-4", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex9-only-default-farms-2", true));
+//				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex9-consumer-owned-funds-5", true));
 			} catch (IOException e) {
 				System.out.println("Disabled remote repositories. " + e.getMessage());
 			}

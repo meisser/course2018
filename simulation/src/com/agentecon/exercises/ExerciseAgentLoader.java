@@ -33,7 +33,7 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 	public ExerciseAgentLoader(String classname, boolean remoteTeams) throws SocketTimeoutException, IOException {
 		super(createFactories(classname, remoteTeams));
 		if (remoteTeams) {
-			defaultFactory = new ExerciseAgentFactory(classname, "meisser", "course");
+			defaultFactory = new ExerciseAgentFactory(classname, "meisser", "course2018");
 		} else {
 			defaultFactory = new ExerciseAgentFactory(classname);
 		}
