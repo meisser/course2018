@@ -36,7 +36,7 @@ public class Farm1 extends AbstractFarm {
 		double money = getMoney().getAmount();
 		
 		// Idea 1: return percentage
-		return money * 0.05;
+		return money * 0.1;
 		
 		// Idea 2: return money above a threshold
 //		if (money > 1000) {
