@@ -235,6 +235,11 @@ public class FirmTest implements IAgentIdGenerator {
 		System.out.println(production2);
 		assert Numbers.equals(production, production2.getAmount());
 	}
+	
+	@Override
+	public int previewNextId() {
+		return 1;
+	}
 
 	@Override
 	public int createUniqueAgentId() {

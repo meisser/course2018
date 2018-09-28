@@ -280,6 +280,11 @@ public class Agents implements IAgents, IAgentIdGenerator {
 		}
 		return matches;
 	}
+	
+	@Override
+	public int previewNextId() {
+		return agentId;
+	}
 
 	@Override
 	public int createUniqueAgentId() {

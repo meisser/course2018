@@ -69,7 +69,7 @@ public class Farmer extends Consumer implements IFounder {
 	}
 
 	private Firm createFarm(IStatistics statistics, IAgentIdGenerator id, IStock myLand, IProductionFunction prod, IShareholder owner, IStock startingCapital) {
-		if (statistics.getRandomNumberGenerator().nextDouble() <= 0.5) {
+		if (id.previewNextId() % 2 == 0) {
 			return new Farm1(id, owner, startingCapital, myLand, prod, statistics);
 		} else {
 			return new Farm2(id, owner, startingCapital, myLand, prod, statistics);

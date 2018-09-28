@@ -7,6 +7,11 @@ import com.agentecon.agent.IAgentIdGenerator;
 public class SimpleAgentIdGenerator implements IAgentIdGenerator {
 
 	@Override
+	public int previewNextId() {
+		return 1;
+	}
+	
+	@Override
 	public int createUniqueAgentId() {
 		return 1;
 	}

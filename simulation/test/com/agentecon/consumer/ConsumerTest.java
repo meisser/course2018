@@ -140,6 +140,11 @@ public class ConsumerTest implements IAgentIdGenerator {
 		});
 		assert Numbers.equals(cons.consume(), cons.getUtilityFunction().getUtility(Arrays.<IStock>asList(new Stock(PIZZA, 2.116844127999999), new Stock(ITALTIME, 21.331651435017676))));
 	}
+	
+	@Override
+	public int previewNextId() {
+		return 1;
+	}
 
 	@Override
 	public int createUniqueAgentId() {

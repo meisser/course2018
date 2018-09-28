@@ -187,6 +187,11 @@ public class Country implements ICountry {
 	}
 
 	@Override
+	public int previewNextId() {
+		return agents.previewNextId();
+	}
+	
+	@Override
 	public int createUniqueAgentId() {
 		return agents.createUniqueAgentId();
 	}

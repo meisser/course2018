@@ -49,7 +49,12 @@ public class SinConsumerEventTest implements ICountry {
 	public Good getMoney() {
 		return new Good("Taler");
 	}
-
+	
+	@Override
+	public int previewNextId() {
+		return 1;
+	}
+	
 	@Override
 	public int createUniqueAgentId() {
 		return 1;

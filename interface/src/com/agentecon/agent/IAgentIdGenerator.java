@@ -18,4 +18,6 @@ public interface IAgentIdGenerator {
 	
 	public Random getRand();
 
+	public int previewNextId();
+
 }
