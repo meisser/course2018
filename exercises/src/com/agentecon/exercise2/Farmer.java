@@ -31,14 +31,16 @@ import com.agentecon.research.IFounder;
 import com.agentecon.research.IInnovation;
 
 /**
- * Unlike the Hermit, the farmer can decide to work at other farms and to buy from others. To formalize these relationships, the farmer does not produce himself anymore, but instead uses his land to
- * found a profit-maximizing firm.
+ * Unlike the Hermit, the farmer can decide to work at other farms and to buy
+ * from others. To formalize these relationships, the farmer does not produce
+ * himself anymore, but instead uses his land to found a profit-maximizing firm.
  */
 public class Farmer extends Consumer implements IFounder {
 
 	public static final double MINIMUM_WORKING_HOURS = 5;
 
 	private Good manhours;
+	private double firmCreatingProbability = 0.05;
 
 	public Farmer(IAgentIdGenerator id, Endowment end, IUtility utility) {
 		super(id, end, utility);
@@ -49,13 +51,13 @@ public class Farmer extends Consumer implements IFounder {
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
 		IStock myLand = getStock(FarmingConfiguration.LAND);
-		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.05) {
+		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < firmCreatingProbability) {
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
 				IShareholder owner = Farmer.this;
 				IStock startingCapital = getMoney().hideRelative(0.5);
-				Firm farm = new com.agentecon.firm.Farm(id, owner, startingCapital, myLand, prod, statistics);
+				Firm farm = createFarm(statistics, id, myLand, prod, owner, startingCapital);
 				farm.getInventory().getStock(manhours).transfer(getStock(manhours), 14);
 				return farm;
 			} else {
@@ -66,10 +68,19 @@ public class Farmer extends Consumer implements IFounder {
 		}
 	}
 
+	private Firm createFarm(IStatistics statistics, IAgentIdGenerator id, IStock myLand, IProductionFunction prod, IShareholder owner, IStock startingCapital) {
+		if (statistics.getRandomNumberGenerator().nextDouble() <= 0.5) {
+			return new Farm1(id, owner, startingCapital, myLand, prod, statistics);
+		} else {
+			return new Farm2(id, owner, startingCapital, myLand, prod, statistics);
+		}
+	}
+
 	private boolean checkProfitability(IPriceProvider prices, IStock myLand, IProductionFunction prod) {
 		try {
 			Quantity hypotheticalInput = getStock(manhours).hideRelative(0.5).getQuantity();
-			Quantity output = prod.calculateOutput(new Quantity(HermitConfiguration.MAN_HOUR, 12), myLand.getQuantity());
+			Quantity output = prod.calculateOutput(new Quantity(HermitConfiguration.MAN_HOUR, 12),
+					myLand.getQuantity());
 			double profits = prices.getPriceBelief(output) - prices.getPriceBelief(hypotheticalInput);
 			return profits > 0;
 		} catch (PriceUnknownException e) {
@@ -86,9 +97,12 @@ public class Farmer extends Consumer implements IFounder {
 		// buy anything with the earned money.
 		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
 
-		// After having worked the minimum amount, work some more and buy goods for consumption in an optimal balance.
-		// Before calling the optimal trade function, we create a facade inventory that hides 80% of the money.
-		// That way, we can build up some savings to smoothen fluctuations and to create new firms. In equilibrium,
+		// After having worked the minimum amount, work some more and buy goods for
+		// consumption in an optimal balance.
+		// Before calling the optimal trade function, we create a facade inventory that
+		// hides 80% of the money.
+		// That way, we can build up some savings to smoothen fluctuations and to create
+		// new firms. In equilibrium,
 		// the daily amount spent is the same, but more smooth over time.
 		Inventory reducedInv = inv.hideRelative(getMoney().getGood(), 0.8);
 		super.trade(reducedInv, market);
@@ -101,12 +115,10 @@ public class Farmer extends Consumer implements IFounder {
 
 	// The "static void main" method is executed when running a class
 	public static void main(String[] args) {
-		// Create the simulation configuration and specify which agent classes should participate
+		// Create the simulation configuration and specify which agent classes should
+		// participate
 		// The simulation will create multiple instances of every class.
 		FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class);
-		
-		// In case you want to test a setting with two different types of farmers, you configure the simulation like this:
-//		FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class, AlternateFarmer.class);
 
 		System.out.print("Creating and running the simulation...");
 		// Create the simulation based on that configuration
@@ -115,11 +127,13 @@ public class Farmer extends Consumer implements IFounder {
 
 		System.out.println(" done.");
 
-		// The configuration has a nice method to analyse the simulation for relevant metrics
+		// The configuration has a nice method to analyse the simulation for relevant
+		// metrics
 		configuration.diagnoseResult(System.out, sim);
 
 		System.out.println();
-		System.out.println("A more advanced way of running the simulation is to start the class com.agentecon.web.SimulationServer from the Arena project.");
+		System.out.println(
+				"A more advanced way of running the simulation is to start the class com.agentecon.web.SimulationServer from the Arena project.");
 	}
 
 }

@@ -51,7 +51,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 	public static final Good MAN_HOUR = HermitConfiguration.MAN_HOUR;
 
 	private static final double LAND_ENDOWMENT = 100;
-	
+
 	public static final int ROUNDS = 5000;
 
 	public static final Quantity FIXED_COSTS = HermitConfiguration.FIXED_COSTS;
@@ -77,14 +77,15 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 			}
 		});
 	}
-	
+
 	@Override
 	public IOptimalityIndicator[] getOptimalFirmCountIndicators() {
-		return new IOptimalityIndicator[] {new OptimalFirmCountIndicator(createProductionFunction(POTATOE), MAN_HOUR)};
+		return new IOptimalityIndicator[] { new OptimalFirmCountIndicator(createProductionFunction(POTATOE), MAN_HOUR) };
 	}
-	
+
+	@Override
 	public IOptimalityIndicator[] getOptimalProductionIndicators() {
-		return new IOptimalityIndicator[] {new OptimalProductionIndicator(new Quantity(LAND, LAND_ENDOWMENT), createProductionFunction(POTATOE), MAN_HOUR)};
+		return new IOptimalityIndicator[] { new OptimalProductionIndicator(new Quantity(LAND, LAND_ENDOWMENT), createProductionFunction(POTATOE), MAN_HOUR) };
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 	@Override
 	public CobbDouglasProductionWithFixedCost createProductionFunction(Good desiredOutput) {
 		assert desiredOutput.equals(POTATOE);
-		return new CobbDouglasProductionWithFixedCost(POTATOE, 3, FIXED_COSTS, new Weight(LAND, 0.2, true), new Weight(MAN_HOUR, 0.6));
+		return new CobbDouglasProductionWithFixedCost(POTATOE, 1.0 /* was 3.0 */, FIXED_COSTS, new Weight(LAND, 0.2, true), new Weight(MAN_HOUR, 0.6));
 	}
 
 	@Override
@@ -147,7 +148,8 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 			System.out.println();
 			System.out.println("Market statistics for the last day:");
 			System.out.println(stats.getGoodsMarketStats());
-			
+			System.out.println("Price ratio: " + stats.getGoodsMarketStats().getPriceBelief(MAN_HOUR) / stats.getGoodsMarketStats().getPriceBelief(POTATOE));
+
 			double totalInput = manhours.getYesterday().getTotWeight();
 			double perFirm = totalInput / optimalNumberOfFirms;
 			if (perFirm > 0.0) {

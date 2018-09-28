@@ -25,7 +25,8 @@ import com.agentecon.sim.IOptimalityIndicator;
 import com.agentecon.util.InstantiatingHashMap;
 
 /**
- * Compares what the firms of one type produced with what they could have produced given the input factors they acquired.
+ * Compares what the firms of one type produced with what they could have
+ * produced given the input factors they acquired.
  */
 public class ProductionStats extends SimStats {
 
@@ -48,7 +49,8 @@ public class ProductionStats extends SimStats {
 
 			@Override
 			protected TimeSeries create(Good key) {
-				return new TimeSeries("Optimal total " + key.getName().toLowerCase() + " output given inputs", getMaxDay());
+				return new TimeSeries("Optimal total " + key.getName().toLowerCase() + " output given inputs",
+						getMaxDay());
 			}
 		};
 		this.usedInputs = new InstantiatingHashMap<Good, MarketStatistics>() {
@@ -107,7 +109,8 @@ public class ProductionStats extends SimStats {
 
 						@Override
 						public String[] getTypeKeys() {
-							return new String[] { inst.getType(), output.getGood().getName().toLowerCase() + " producers" };
+							return new String[] { inst.getType(),
+									output.getGood().getName().toLowerCase() + " producers" };
 						}
 
 						@Override
@@ -123,11 +126,12 @@ public class ProductionStats extends SimStats {
 	@Override
 	public void notifyDayEnded(IStatistics stats) {
 		for (MarketStatistics market : usedInputs.values()) {
-			market.notifyMarketClosed(stats.getDay());
+			market.notifyMarketClosed(stats.getDay(), null);
 		}
 		for (IOptimalityIndicator indicator : indicators) {
 			MarketStatistics volumeStatistics = usedInputs.get(indicator.getOutputGood());
-			optimalProduction.get(indicator.getOutputGood()).set(stats.getDay(), indicator.getOptimum(volumeStatistics));
+			double optimum = indicator.getOptimum(volumeStatistics);
+			optimalProduction.get(indicator.getOutputGood()).set(stats.getDay(), optimum);
 		}
 		for (TimeSeriesCollector collector : collectors.values()) {
 			collector.flushDay(stats.getDay(), false);

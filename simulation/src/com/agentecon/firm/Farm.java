@@ -95,7 +95,7 @@ public class Farm extends Producer {
 		super.considerBankruptcy(stats);
 		IFinancials fin = marketing.getFinancials(getInventory(), getProductionFunction());
 		double profits = fin.getProfits();
-		if (profits <= 0) {
+		if (profits <= 0.01) {
 			daysWithoutProfit++;
 		} else {
 			daysWithoutProfit = 0;

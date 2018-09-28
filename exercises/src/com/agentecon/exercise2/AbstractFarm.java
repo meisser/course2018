@@ -19,11 +19,11 @@ import com.agentecon.market.IPriceMakerMarket;
 import com.agentecon.market.IStatistics;
 import com.agentecon.production.IProductionFunction;
 
-public class Farm extends Producer {
+public abstract class AbstractFarm extends Producer {
 
-	private MarketingDepartment marketing;
+	protected MarketingDepartment marketing;
 
-	public Farm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun, IStatistics stats) {
+	public AbstractFarm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun, IStatistics stats) {
 		super(id, owner, prodFun, stats.getMoney());
 		this.marketing = new MarketingDepartment(getMoney(), stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
 		getStock(land.getGood()).absorb(land);
@@ -37,15 +37,7 @@ public class Farm extends Producer {
 		marketing.createOffers(market, this, budget);
 	}
 
-	private double calculateBudget() {
-		return 100; // Why not spending 100? :)
-
-		// Things that might or might not be useful here:
-		// double fixedCosts = getProductionFunction().getFixedCost(FarmingConfiguration.MAN_HOUR);
-		// double manHoursPrice = marketing.getPriceBelief(FarmingConfiguration.MAN_HOUR);
-		// double availableCash = getMoney().getAmount();
-		// etc.
-	}
+	protected abstract double calculateBudget();
 
 	@Override
 	public void adaptPrices() {
@@ -57,13 +49,6 @@ public class Farm extends Producer {
 		super.produce();
 	}
 
-	@Override
-	protected double calculateDividends(int day) {
-		double money = getMoney().getAmount();
-		double dividendRate = 0.1;
-		return money * dividendRate; // Simply pay out 10% of the current cash reserves as dividends
-	}
-
 	private int daysWithoutProfit = 0;
 
 	@Override
@@ -71,12 +56,12 @@ public class Farm extends Producer {
 		super.considerBankruptcy(stats);
 		IFinancials fin = marketing.getFinancials(getInventory(), getProductionFunction());
 		double profits = fin.getProfits();
-		if (profits <= 0) {
+		if (profits <= 0.01) {
 			daysWithoutProfit++;
 		} else {
 			daysWithoutProfit = 0;
 		}
-		return daysWithoutProfit > 100;
+		return daysWithoutProfit > 20;
 	}
 
 }
