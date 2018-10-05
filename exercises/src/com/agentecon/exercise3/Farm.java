@@ -9,6 +9,7 @@
 package com.agentecon.exercise3;
 
 import com.agentecon.agent.IAgentIdGenerator;
+import com.agentecon.exercise2.AbstractFarm;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.finance.Producer;
 import com.agentecon.firm.IShareholder;
@@ -21,21 +22,16 @@ import com.agentecon.market.IStatistics;
 import com.agentecon.production.IProductionFunction;
 import com.agentecon.production.PriceUnknownException;
 
-public class Farm extends Producer {
+public class Farm extends AbstractFarm {
 
 	private static final double CAPITAL_BUFFER = 0.9;
 	private static final double CAPITAL_TO_SPENDINGS_RATIO = 1 / (1 - CAPITAL_BUFFER);
 
 	private CovarianceControl control;
-	private MarketingDepartment marketing;
 
 	public Farm(IAgentIdGenerator id, IShareholder owner, IStock money, IStock land, IProductionFunction prodFun, IStatistics stats) {
-		super(id, owner, prodFun, stats.getMoney());
+		super(id, owner, money, land, prodFun, stats);
 		this.control = new CovarianceControl(getInitialBudget(stats), 0.2);
-		this.marketing = new MarketingDepartment(getMoney(), stats.getGoodsMarketStats(), getStock(FarmingConfiguration.MAN_HOUR), getStock(FarmingConfiguration.POTATOE));
-		getStock(land.getGood()).absorb(land);
-		getMoney().absorb(money);
-		assert getMoney().getAmount() > 0;
 	}
 
 	protected double getInitialBudget(IStatistics stats) {
@@ -46,26 +42,10 @@ public class Farm extends Producer {
 		}
 	}
 
-	@Override
-	public void offer(IPriceMakerMarket market) {
-		double budget = calculateBudget();
-		marketing.createOffers(market, this, budget);
-	}
-
-	private double calculateBudget() {
+	protected double calculateBudget() {
 		double profits = marketing.getFinancials(getInventory(), getProductionFunction()).getProfits();
 		control.reportOutput(profits);
 		return control.getCurrentInput();
-	}
-
-	@Override
-	public void adaptPrices() {
-		marketing.adaptPrices();
-	}
-
-	@Override
-	public void produce() {
-		super.produce();
 	}
 
 	@Override
@@ -79,21 +59,6 @@ public class Farm extends Producer {
 		} else {
 			return 0;
 		}
-	}
-
-	private int daysWithoutProfit = 0;
-
-	@Override
-	public boolean considerBankruptcy(IStatistics stats) {
-		super.considerBankruptcy(stats);
-		IFinancials fin = marketing.getFinancials(getInventory(), getProductionFunction());
-		double profits = fin.getProfits();
-		if (profits <= 0) {
-			daysWithoutProfit++;
-		} else {
-			daysWithoutProfit = 0;
-		}
-		return daysWithoutProfit > 100;
 	}
 
 }

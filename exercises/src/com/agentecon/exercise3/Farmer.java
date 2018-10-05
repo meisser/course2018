@@ -35,7 +35,7 @@ import com.agentecon.research.IInnovation;
  * found a profit-maximizing firm.
  */
 public class Farmer extends Consumer implements IFounder {
-	
+
 	private static final double CAPITAL_BUFFER = 0.80;
 
 	public static final double MINIMUM_WORKING_HOURS = 5;
@@ -51,13 +51,13 @@ public class Farmer extends Consumer implements IFounder {
 	@Override
 	public IFirm considerCreatingFirm(IStatistics statistics, IInnovation research, IAgentIdGenerator id) {
 		IStock myLand = getStock(FarmingConfiguration.LAND);
-		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.05 && getAge() < 2000) {
+		if (myLand.hasSome() && statistics.getRandomNumberGenerator().nextDouble() < 0.05) {
 			// I have plenty of land and feel lucky, let's see if we want to found a farm
 			IProductionFunction prod = research.createProductionFunction(FarmingConfiguration.POTATOE);
 			if (checkProfitability(statistics.getGoodsMarketStats(), myLand, prod)) {
 				IShareholder owner = Farmer.this;
 				IStock startingCapital = getMoney().hideRelative(0.5);
-				Firm farm = new Farm(id, owner, startingCapital, myLand, prod, statistics);
+				Firm farm = createFarm(statistics, id, myLand, prod, owner, startingCapital);
 				farm.getInventory().getStock(manhours).transfer(getStock(manhours), 14);
 				return farm;
 			} else {
@@ -66,6 +66,10 @@ public class Farmer extends Consumer implements IFounder {
 		} else {
 			return null;
 		}
+	}
+
+	private Firm createFarm(IStatistics statistics, IAgentIdGenerator id, IStock myLand, IProductionFunction prod, IShareholder owner, IStock startingCapital) {
+		return new Farm(id, owner, startingCapital, myLand, prod, statistics);
 	}
 
 	private boolean checkProfitability(IPriceProvider prices, IStock myLand, IProductionFunction prod) {
@@ -106,7 +110,7 @@ public class Farmer extends Consumer implements IFounder {
 		// Create the simulation configuration and specify which agent classes should participate
 		// The simulation will create multiple instances of every class.
 		FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class);
-		
+
 		// In case you want to test a setting with two different types of farmers, you configure the simulation like this:
 //		FarmingConfiguration configuration = new FarmingConfiguration(Farmer.class, AlternateFarmer.class);
 

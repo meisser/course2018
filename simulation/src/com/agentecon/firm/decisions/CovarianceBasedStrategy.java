@@ -21,15 +21,13 @@ public class CovarianceBasedStrategy implements IFirmDecisions {
 
 	private int age = 0;
 	private MovingCovariance cov;
-	private IFinancials financials;
 
-	public CovarianceBasedStrategy(IFinancials financials) {
-		this.financials = financials;
+	public CovarianceBasedStrategy() {
 		this.cov = new MovingCovariance(0.95);
 	}
 	
 	@Override
-	public double calcDividend(IFinancials metrics) {
+	public double calcDividend(IFinancials financials) {
 		if (++age > 3) {
 			double profits = financials.getExpectedRevenue() - financials.getLatestCogs();
 			double sizeBeforeProfits = financials.getCash() - profits;

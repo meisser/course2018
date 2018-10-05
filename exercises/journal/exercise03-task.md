@@ -22,11 +22,11 @@ The farmer and the farm from exercise 3 both have a constant CAPITAL_BUFFER, tha
 
 ## Task 2: Interest Rates
 
-Now, start paying interest on cash holdings using the [InterestEvent](../src/com/agentecon/exercise3/InterestEvent.java). What effect does printing of money (i.e. increasing M) have on the other three variables from the Fisher equation?
+Now, start paying interest on cash holdings using the [InterestEvent](../src/com/agentecon/exercise3/InterestEvent.java). What effect does printing of money (i.e. increasing M) have on the other three variables from the Fisher equation? (You can enable the InterestEvent by uncommenting the according line in MoneyConfiguration.)
 
 ## Task 3: Lump sum subsidies
 
-In classic theory, money is neutral in the long run. If there is twice as much money, prices will be twice as high, but everything else should stay the same. However, what if we do not distribute the freshly printed money evenly? Can an agent gain an advantage by getting the newly printed money first? To try this out, use the [HelicopterMoneyEvents](../src/com/agentecon/exercise3/HelicopterMoneyEvent.java) to give a particular agent some additional money every day and try to test whether that agents enjoys a higher utility than the others as a result.
+In classic theory, money is neutral in the long run. If there is twice as much money, prices will be twice as high, but everything else should stay the same. However, what if we do not distribute the freshly printed money evenly? Can an agent gain an advantage by getting the newly printed money first? To try this out, use the [HelicopterMoneyEvents](../src/com/agentecon/exercise3/HelicopterMoneyEvent.java) to give a particular agent some additional money every day and try to test whether that agent enjoys a higher utility than the others as a result. (You can enable the HelicopterMoneyEvent by uncommenting the according line in MoneyConfiguration.)
 
 ## Deliverables and deadline
 

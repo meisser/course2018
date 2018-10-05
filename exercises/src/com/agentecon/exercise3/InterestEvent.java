@@ -10,12 +10,12 @@ public class InterestEvent extends SimEvent {
 
 	private double interestRate;
 	
-	public InterestEvent(double interestRate) {
-		this(interestRate, 10);
+	public InterestEvent(int startDay, double interestRate) {
+		this(startDay, interestRate, 10);
 	}
 	
-	public InterestEvent(double interestRate, int payoutInterval) {
-		super(1, payoutInterval, 1);
+	public InterestEvent(int startDay, double interestRate, int payoutInterval) {
+		super(startDay, payoutInterval, 1);
 		this.interestRate = interestRate;
 	}
 
