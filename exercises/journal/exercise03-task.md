@@ -14,7 +14,7 @@ $MV = PT$
 
 It says that money supply multiplied with its velocity should equal prices multiplied with transaction volume, whereas the latter two can be vectors if there are multiple goods. Dividends are ignored. For example, if there are 10 man-hours traded at 5 and 20 potatoes at 3, with the monetary supply being $M=220$, the resulting velocity $V$ is:
 
-$V = (10 * 5\$ + 20 * 3\$) / 220\$ = 0.5$ 
+$V = (10 * 5 + 20 * 3) / 220 = 0.5$ 
 
 This says that the average dollar is kept for two days before it is spent. Note that the velocity of money cannot be directly measured. Instead, it is calculated by measuring the other parameters first. Do so using the "monetary" statistics available in the web interface.
 
