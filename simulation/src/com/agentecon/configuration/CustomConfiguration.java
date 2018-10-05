@@ -6,7 +6,6 @@ import java.net.SocketTimeoutException;
 import java.util.Collection;
 
 import com.agentecon.ISimulation;
-import com.agentecon.classloader.CompilingClassLoader;
 import com.agentecon.classloader.RemoteLoader;
 import com.agentecon.classloader.SimulationHandle;
 import com.agentecon.goods.Good;
@@ -19,7 +18,7 @@ public class CustomConfiguration extends SimulationConfig {
 	private SimulationConfig delegate;
 
 	public CustomConfiguration() throws IOException {
-		this("com.agentecon.exercise3.MoneyConfigurationWithHelicopter");
+		this("com.agentecon.exercise3.MoneyConfiguration");
 	}
 
 	public CustomConfiguration(String classname) throws IOException {
