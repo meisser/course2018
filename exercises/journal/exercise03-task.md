@@ -18,7 +18,7 @@ $V = (10 * 5 + 20 * 3) / 220 = 0.5$
 
 This says that the average dollar is kept for two days before it is spent. Note that the velocity of money cannot be directly measured. Instead, it is calculated by measuring the other parameters first. Do so using the "monetary" statistics available in the web interface.
 
-The farmer and the farm from exercise 3 both have a constant CAPITAL_BUFFER, that specifies how much income and capital they should put aside as a buffer to smoothen random fluctuations. How are the four variables in the Fisher equation affected when adjusting the size of the farm's buffer?
+The farmer and the farm from exercise 3 both have a constant CAPITAL_BUFFER, that specifies how much income and capital they should put aside as a buffer to smoothen random fluctuations. How are the four variables in the Fisher equation affected when adjusting the size of the **farmer**'s buffer?
 
 ## Task 2: Interest Rates
 
