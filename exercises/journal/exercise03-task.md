@@ -12,7 +12,7 @@ We have seen the Fisher equation in the lecture:
 
 $MV = PT$ 
 
-It says that money supply multiplied with its velocity should equal prices multiplied with transaction volume, whereas the latter two can be vectors if there are multiple goods. Dividends are ignored. For example, if there are 10 man-hours traded at $5\$$  an 20 potatoes at $3\$$, with the monetary supply being $M=220$, the resulting velocity $V$ is:
+It says that money supply multiplied with its velocity should equal prices multiplied with transaction volume, whereas the latter two can be vectors if there are multiple goods. Dividends are ignored. For example, if there are 10 man-hours traded at 5 and 20 potatoes at 3, with the monetary supply being $M=220$, the resulting velocity $V$ is:
 
 $V = (10 * 5\$ + 20 * 3\$) / 220\$ = 0.5$ 
 
