@@ -46,6 +46,7 @@ public class SimulationServer extends VisServer {
 				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex3-money-basic-1", true));
 				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex3-money-interest-1", true));
 				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex3-money-helicopter-1", true));
+				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex3-money-buffer-1", true));
 //				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex4-growth-6", true));
 //				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex5-stocks-2", true));
 //				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex5-market-maker-chaos", true));
