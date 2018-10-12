@@ -10,15 +10,15 @@ Furthermore, we add retirements to the model and disallow the agents to work as 
 
 This task can be solved entirely with pen and paper and good reasoning. Assuming that the agents maximize total life-time utility, how much should they save every day while working? And how much should of their savings should they spend in retirement?
 
-You should maximize total life-time utility, i.e.:
+You should maximize total life-time utility without applying a discount rate, i.e.:
 
 $max \sum_{i=1}^{500} u(h_{l,i}) + u(x_{p,i})$
 
-You can assume constant prices and a constant income stream  $w_i = w$ during for as long as the agent works (i.e. for the first 400 days). This reduces the problem to maximizing utility from potatoe consumption $x_{p,i}$:
+You can assume constant prices and a constant income stream from work $w_i = w$ during for as long as the agent works (i.e. for the first 400 days) as well as constant dividends $d_i = d$. These assumptions remove all flexibility regarding the number of hours worked per day, reducing the problem to maximizing life-time utility from potatoe consumption $x_{p,i}$:
 
-$max \sum_{i=1}^{500} u(x_{p,i})$ subject to the budget constraint $\sum_{i=1}^{500} p x_{p,i} = \sum_{i=1}^{400} w_i = 400 w$
+$max \sum_{i=1}^{500} u(x_{p,i})$ subject to the budget constraint $\sum_{i=1}^{500} p x_{p,i} = \sum_{i=1}^{400} w_i + \sum_{i=1}^{500} d_i = 400 w + 500 d = W$
 
-Once you have solved this, you derive a simple yet optimal savings heuristic for workers that do not receive a dividend. In a second step, try to adjust the heuristic to incorporate dividends, i.e. adding a constant income stream that continues in retirement. Ideally, this decision rule is robust against fluctuations in income, so you cannot simply assume that total life-time income is 400 times the latest income.
+So how much of his life-time wealth $W$ should a consumer spend per day? What savings heuristics does that imply? I.e. how much of his daily income should the consumer put aside while working and how much of his savings should the consumer spend once he is retired?
 
 ## Task 2: Simulation
 
