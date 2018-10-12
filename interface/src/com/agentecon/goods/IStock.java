@@ -40,7 +40,7 @@ public interface IStock {
 			this.remove(-amount);
 			source.add(-amount);
 		}
-		assert source.getAmount() < 1000000000;
+		assert source.getAmount() < 1000000000 : "Unreasonably high value of " + getGood() + " transferred. Is too much money being printed?";
 		assert getAmount() < 1000000000;
 	}
 
