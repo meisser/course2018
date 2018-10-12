@@ -24,7 +24,7 @@ So how much of his life-time wealth $W$ should a consumer spend per day? What sa
 
 To test your savings heuristic, you should implement the method managePortfolio of your [farmer](../src/com/agentecon/exercise4/Farmer.java).
 
-Note that when the agents save too much money, there might not be enough money left to keep the economy going. To prevent this, the [GrowthConfiguration](../../simulation/src/com/agentecon/configuration/GrowthConfiguration.java) includes a CentralBankEvent which prints a little money whenever the price of a potatoe falls below 5.
+Note that when the agents save too much money, there might not be enough money left to keep the economy going. To prevent this, the [GrowthConfiguration](../../simulation/src/com/agentecon/configuration/GrowthConfiguration.java) includes a CentralBankEvent which prints a little money whenever the price of a potatoe falls below 5. Furthermore, in comparison to the previous simulations, the number of initial agents has been reduced to 30, as this is divisible by the number of teams. Furthermore, the production of the farm has been increased by a factor of three to help newly created farms becoming profitable more quickly. However, this has no implications for the savings heuristic.
 
 ## Deliverables and deadline
 
