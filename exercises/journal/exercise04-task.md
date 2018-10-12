@@ -12,9 +12,9 @@ This task can be solved entirely with pen and paper and good reasoning. Assuming
 
 You should maximize total life-time utility without applying a discount rate, i.e.:
 
-$max \sum_{i=1}^{500} u(h_{l,i}) + u(x_{p,i})$
+$max \sum_{i=1}^{500} u(h_{l,i}, x_{p,i})$
 
-You can assume constant prices and a constant income stream from work $w_i = w$ for as long as the agent works (i.e. for the first 400 days) as well as constant income stream from dividends $d_i = d$ that lasts all his life (disregarding the possibility of selling the farm). These assumptions remove all flexibility regarding the number of hours worked per day, reducing the problem to maximizing life-time utility from potatoe consumption $x_{p,i}$:
+with $u(h, x) = ln(h) + ln(x)$. You can assume constant prices and a constant income stream from work $w_i = w$ for as long as the agent works (i.e. for the first 400 days) as well as constant income stream from dividends $d_i = d$ that lasts all his life (disregarding the possibility of selling the farm). These assumptions remove all flexibility regarding the number of hours worked per day, reducing the problem to maximizing life-time utility from potatoe consumption $x_{p,i}$:
 
 $max \sum_{i=1}^{500} u(x_{p,i})$ subject to the budget constraint $\sum_{i=1}^{500} p x_{p,i} = \sum_{i=1}^{400} w_i + \sum_{i=1}^{500} d_i = 400 w + 500 d = W$
 
