@@ -17,12 +17,15 @@ import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
+import com.agentecon.consumer.Weight;
 import com.agentecon.events.GrowthEvent;
 import com.agentecon.events.IUtilityFactory;
 import com.agentecon.events.MinPopulationGrowthEvent;
 import com.agentecon.exercises.ExerciseAgentLoader;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
+import com.agentecon.firm.production.CobbDouglasProductionWithFixedCost;
+import com.agentecon.goods.Good;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
 import com.agentecon.research.IInnovation;
@@ -31,7 +34,7 @@ import com.agentecon.world.ICountry;
 public class GrowthConfiguration extends FarmingConfiguration implements IUtilityFactory, IInnovation {
 	
 	private static final int BASIC_AGENTS = 30;
-	public static final String BASIC_AGENT = "com.agentecon.exercise4.Farmer";
+	public static final String FARMER = "com.agentecon.exercise4.Farmer";
 	
 	public static final double GROWTH_RATE = 0.0025;
 	public static final int MAX_AGE = 500;
@@ -42,7 +45,7 @@ public class GrowthConfiguration extends FarmingConfiguration implements IUtilit
 	}
 	
 	public GrowthConfiguration() throws SocketTimeoutException, IOException {
-		this(new ExerciseAgentLoader(BASIC_AGENT), BASIC_AGENTS);
+		this(new ExerciseAgentLoader(FARMER), BASIC_AGENTS);
 	}
 	
 	public GrowthConfiguration(IAgentFactory loader, int agents) {
@@ -59,7 +62,7 @@ public class GrowthConfiguration extends FarmingConfiguration implements IUtilit
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
 		try {
-			IAgentFactory growthLoader = new AgentFactoryMultiplex(new ExerciseAgentLoader("com.agentecon.exercise5.Saver"));
+			IAgentFactory growthLoader = new AgentFactoryMultiplex(new ExerciseAgentLoader(FARMER));
 			addEvent(new MinPopulationGrowthEvent(0, BASIC_AGENTS){
 
 				@Override
@@ -86,6 +89,12 @@ public class GrowthConfiguration extends FarmingConfiguration implements IUtilit
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public CobbDouglasProductionWithFixedCost createProductionFunction(Good desiredOutput) {
+		assert desiredOutput.equals(POTATOE);
+		return new CobbDouglasProductionWithFixedCost(POTATOE, 3.0, FIXED_COSTS, new Weight(LAND, 0.2, true), new Weight(MAN_HOUR, 0.6));
 	}
 	
 	@Override

@@ -42,7 +42,7 @@ public abstract class Agent implements IAgent, Cloneable {
 			return findType(clazz);
 		}
 	}
-
+	
 	public String getVersion() {
 		ClassLoader loader = getClass().getClassLoader();
 		if (loader instanceof RemoteLoader) {
