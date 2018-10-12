@@ -36,7 +36,7 @@ public class GrowthConfiguration extends FarmingConfiguration implements IUtilit
 	private static final int BASIC_AGENTS = 30;
 	public static final String FARMER = "com.agentecon.exercise4.Farmer";
 	
-	public static final double GROWTH_RATE = 0.0025;
+	public static final double GROWTH_RATE = 0.0023;
 	public static final int MAX_AGE = 500;
 
 	@SafeVarargs
@@ -72,7 +72,7 @@ public class GrowthConfiguration extends FarmingConfiguration implements IUtilit
 				}
 				
 			});
-			addEvent(new GrowthEvent(0, GROWTH_RATE){
+			addEvent(new GrowthEvent(0, GROWTH_RATE, false){
 
 				@Override
 				protected void execute(ICountry sim) {
