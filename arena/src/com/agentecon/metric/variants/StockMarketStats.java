@@ -39,10 +39,12 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 	private AveragingTimeSeries investments, divestments, difference;
 
 	private boolean includeIndex;
+	private boolean individualStocks;
 
-	public StockMarketStats(ISimulation agents, boolean includeIndex) {
+	public StockMarketStats(ISimulation agents, boolean includeIndex, boolean individualStocks) {
 		super(agents);
 		this.includeIndex = includeIndex;
+		this.individualStocks = individualStocks;
 		this.investments = new AveragingTimeSeries("Inflows", getMaxDay());
 		this.divestments = new AveragingTimeSeries("Outflows", getMaxDay());
 		this.difference = new AveragingTimeSeries("Inflows - Outflows", getMaxDay());
@@ -133,6 +135,9 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 			IFirm firm = getAgents().getFirm(e.getKey());
 			Good sector = new Good(firm.getType());
 			Average avgPrice = e.getValue();
+			if (individualStocks) {
+				prices.get(e.getKey()).set(day, avgPrice.getAverage());
+			}
 			double marketCap = firm.getShareRegister().getFreeFloatShares() * avgPrice.getAverage();
 			indexPoints.add(marketCap, avgPrice);
 			sectorIndices.get(sector).add(marketCap, avgPrice);
@@ -142,6 +147,9 @@ public class StockMarketStats extends SimStats implements IMarketListener, ICons
 				double yield = dividends / marketCap;
 				indexYield.add(marketCap, yield);
 				sectorYields.get(sector).add(marketCap, yield);
+				if (individualStocks) {
+					dividendYield.get(e.getKey()).set(day, yield);
+				}
 			}
 		}
 		// printTicker(day);

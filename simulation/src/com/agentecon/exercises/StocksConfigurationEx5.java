@@ -93,7 +93,7 @@ public class StocksConfigurationEx5 extends HighProductivityConfiguration implem
 			}
 
 		});
-		addEvent(new GrowthEvent(0, GROWTH_RATE) {
+		addEvent(new GrowthEvent(0, GROWTH_RATE, false) {
 
 			@Override
 			protected void execute(ICountry sim) {
@@ -104,7 +104,7 @@ public class StocksConfigurationEx5 extends HighProductivityConfiguration implem
 			}
 
 		});
-		addEvent(new GrowthEvent(GROW_UNTIL, 1.0d / MAX_AGE) {
+		addEvent(new GrowthEvent(GROW_UNTIL, 1.0d / MAX_AGE, false) {
 
 			@Override
 			protected void execute(ICountry sim) {

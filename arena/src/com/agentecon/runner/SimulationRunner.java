@@ -49,7 +49,7 @@ public class SimulationRunner {
 		} else {
 			MarketStats mstats = new MarketStats(sim, true);
 			this.stats.add(mstats);
-			StockMarketStats sstats = new StockMarketStats(sim, true);
+			StockMarketStats sstats = new StockMarketStats(sim, true, false);
 			this.stats.add(sstats);
 			this.stats.add(new ValuationStats(sim));
 			this.stats.add(new OwnershipStats(sim));

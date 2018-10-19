@@ -33,10 +33,7 @@ import com.agentecon.research.IInnovation;
  * Unlike the Hermit, the farmer can decide to work at other farms and to buy from others. To formalize these relationships, the farmer does not produce himself anymore, but instead uses his land to
  * found a profit-maximizing firm.
  */
-public class SavingConsumer extends MortalConsumer implements IFounder {
-
-	private static final double CAPITAL_BUFFER = 0.80;
-	public static final double MINIMUM_WORKING_HOURS = 5;
+public class SavingConsumer extends BufferingMortalConsumer implements IFounder {
 
 	private Good manhours;
 	private double savings;
@@ -96,14 +93,9 @@ public class SavingConsumer extends MortalConsumer implements IFounder {
 
 	@Override
 	protected void trade(Inventory inv, IPriceTakerMarket market) {
-		// The trading inventory is created in two stages:
-		// - First we hide the savings, which we want to keep for the future
-		// - Second we hide a relative amount of what is left as a buffer as usual
+		// We hide the savings, which we want to keep for the future
 		Inventory inventoryWithoutSavings = inv.hide(getMoney().getGood(), savings);
-		Inventory reducedInv = inventoryWithoutSavings.hideRelative(getMoney().getGood(), CAPITAL_BUFFER);
-
-		super.workAtLeast(market, MINIMUM_WORKING_HOURS);
-		super.trade(reducedInv, market);
+		super.trade(inventoryWithoutSavings, market);
 	}
 
 }

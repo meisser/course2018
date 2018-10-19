@@ -10,8 +10,8 @@ package com.agentecon.exercise5;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
+import com.agentecon.consumer.BufferingMortalConsumer;
 import com.agentecon.consumer.IUtility;
-import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.finance.stockpicking.IStockPickingStrategy;
 import com.agentecon.firm.IStockMarket;
@@ -22,8 +22,8 @@ import com.agentecon.market.IPriceTakerMarket;
 /**
  * A mortal consumer that invests in the stock market to save for retirement.
  */
-public class Investor extends MortalConsumer {
-	
+public class Investor extends BufferingMortalConsumer {
+
 	private IStockPickingStrategy strategy;
 
 	public Investor(IAgentIdGenerator id, int maxAge, Endowment end, IUtility utility) {
@@ -39,6 +39,7 @@ public class Investor extends MortalConsumer {
 			double proceeds = getPortfolio().sell(stocks, this, 1.0d / daysLeft);
 			listeners.notifyDivested(this, proceeds); // notify listeners for inflow / outflow statistics
 		} else {
+			// Strategy copied from previous saver. Not optimal when investing in undervalued or overvalued stocks...
 			double dividends = getPortfolio().getLatestDividendIncome();
 			double workFraction = 1.0d / getMaxAge() * getRetirementAge(); // 80%
 			double retirementFraction = 1 - workFraction; // 20%
@@ -47,7 +48,7 @@ public class Investor extends MortalConsumer {
 			listeners.notifyInvested(this, actualInvestment); // notify listeners for inflow / outflow statistics
 		}
 	}
-	
+
 	@Override
 	protected void trade(Inventory inv, IPriceTakerMarket market) {
 		// If a farm goes bankrupt, the shareholder get the remaining land of the farm. In that case, let's simply sell the land.
@@ -57,5 +58,5 @@ public class Investor extends MortalConsumer {
 		}
 		super.trade(inv, market);
 	}
-	
+
 }
