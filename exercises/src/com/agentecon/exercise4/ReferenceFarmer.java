@@ -11,6 +11,7 @@ package com.agentecon.exercise4;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.IUtility;
+import com.agentecon.consumer.Inheritance;
 import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
@@ -41,12 +42,38 @@ public class ReferenceFarmer extends MortalConsumer implements IFounder {
 
 	private Good manhours;
 	private double savings;
+	private boolean isOwner;
 
 	public ReferenceFarmer(IAgentIdGenerator id, int maxAge, Endowment end, IUtility utility) {
 		super(id, maxAge, end, utility);
 		this.savings = 0.0;
 		this.manhours = end.getDaily()[0].getGood();
 		assert this.manhours.equals(FarmingConfiguration.MAN_HOUR);
+	}
+	
+	private boolean hasLand() {
+		return getInventory().getStock(FarmingConfiguration.LAND).hasSome();
+	}
+	
+	private boolean hasFarm() {
+		return getPortfolio().hasPositions();
+	}
+	
+	@Override
+	public void inherit(Inheritance inheritance) {
+		super.inherit(inheritance);
+		if (hasLand() || hasFarm()) {
+			this.isOwner = true;
+		}
+	}
+	
+	@Override
+	public String getType() {
+		if (isOwner) {
+			return super.getType() + "(Owner)";
+		} else {
+			return super.getType() + "(Worker)";
+		}
 	}
 
 	@Override
