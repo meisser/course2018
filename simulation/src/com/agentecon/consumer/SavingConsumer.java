@@ -8,10 +8,8 @@
  */
 package com.agentecon.consumer;
 
-import com.agentecon.Simulation;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
-import com.agentecon.configuration.GrowthConfiguration;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.Firm;
@@ -54,7 +52,7 @@ public class SavingConsumer extends MortalConsumer implements IFounder {
 	public void managePortfolio(IStockMarket stocks) {
 		boolean retired = isRetired();
 		if (retired) {
-			int daysLeft = getMaxAge() - getAge();
+			int daysLeft = getMaxAge() - getAge() + 1;
 			double consumptionToday = this.savings / daysLeft;
 			this.savings -= consumptionToday;
 		} else {
@@ -111,19 +109,6 @@ public class SavingConsumer extends MortalConsumer implements IFounder {
 	@Override
 	public double consume() {
 		return super.consume();
-	}
-
-	public static void main(String[] args) {
-		// You can run this to test whether the simulation actually completes
-		// To analyze the results, you should use the SimulationServer
-		GrowthConfiguration configuration = new GrowthConfiguration(SavingConsumer.class);
-		System.out.print("Creating and running the simulation...");
-		// Create the simulation based on that configuration
-		Simulation sim = new Simulation(configuration);
-		long t0 = System.nanoTime();
-		sim.run(); // run the simulation
-		long t1 = System.nanoTime();
-		System.out.println(" done after " + (t1 - t0) / 1000000 + "ms");
 	}
 
 }

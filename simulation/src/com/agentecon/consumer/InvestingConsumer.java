@@ -74,17 +74,4 @@ public class InvestingConsumer extends MortalConsumer {
 		return super.consume();
 	}
 
-	public static void main(String[] args) {
-		// You can run this to test whether the simulation actually completes
-		// To analyze the results, you should use the SimulationServer
-		GrowthConfiguration configuration = new GrowthConfiguration(InvestingConsumer.class);
-		System.out.print("Creating and running the simulation...");
-		// Create the simulation based on that configuration
-		Simulation sim = new Simulation(configuration);
-		long t0 = System.nanoTime();
-		sim.run(); // run the simulation
-		long t1 = System.nanoTime();
-		System.out.println(" done after " + (t1 - t0) / 1000000 + "ms");
-	}
-
 }
