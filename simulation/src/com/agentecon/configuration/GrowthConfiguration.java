@@ -32,10 +32,11 @@ import com.agentecon.research.IInnovation;
 import com.agentecon.world.ICountry;
 
 public class GrowthConfiguration extends FarmingConfiguration implements IUtilityFactory, IInnovation {
-	
-	private static final int BASIC_AGENTS = 30;
+
+	private static final boolean INCLUDE_REFERENCE_AGENT = true;
+	private static final int BASIC_AGENTS = 5 * (INCLUDE_REFERENCE_AGENT ? ExerciseAgentLoader.TEAMS.size() + 1 : ExerciseAgentLoader.TEAMS.size());
 	public static final String FARMER = "com.agentecon.exercise4.Farmer";
-	
+
 	public static final double GROWTH_RATE = 0.0023;
 	public static final int MAX_AGE = 500;
 
@@ -43,16 +44,16 @@ public class GrowthConfiguration extends FarmingConfiguration implements IUtilit
 	public GrowthConfiguration(Class<? extends Consumer>... agents) {
 		this(new AgentFactoryMultiplex(agents), BASIC_AGENTS);
 	}
-	
+
 	public GrowthConfiguration() throws SocketTimeoutException, IOException {
-		this(new ExerciseAgentLoader(FARMER), BASIC_AGENTS);
+		this(new ExerciseAgentLoader(FARMER, INCLUDE_REFERENCE_AGENT ? "com.agentecon.exercise4.ReferenceFarmer" : null), BASIC_AGENTS);
 	}
-	
+
 	public GrowthConfiguration(IAgentFactory loader, int agents) {
 		super(new IAgentFactory() {
-			
+
 			private int number = 1;
-			
+
 			@Override
 			public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
 				int maxAge = number++ * MAX_AGE / agents;
@@ -61,42 +62,34 @@ public class GrowthConfiguration extends FarmingConfiguration implements IUtilit
 		}, agents);
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
-		try {
-			IAgentFactory growthLoader = new AgentFactoryMultiplex(new ExerciseAgentLoader(FARMER));
-			addEvent(new MinPopulationGrowthEvent(0, BASIC_AGENTS){
+		IAgentFactory growthLoader = loader;
+		addEvent(new MinPopulationGrowthEvent(0, BASIC_AGENTS) {
 
-				@Override
-				protected void execute(ICountry sim) {
-					IConsumer cons = growthLoader.createConsumer(sim, MAX_AGE, workerEndowment, create(0));
-					sim.add(cons);
-				}
-				
-			});
-			addEvent(new GrowthEvent(0, GROWTH_RATE, false){
+			@Override
+			protected void execute(ICountry sim) {
+				IConsumer cons = growthLoader.createConsumer(sim, MAX_AGE, workerEndowment, create(0));
+				sim.add(cons);
+			}
 
-				@Override
-				protected void execute(ICountry sim) {
-					IConsumer cons = growthLoader.createConsumer(sim, MAX_AGE, workerEndowment, create(0));
-					sim.add(cons);
-				}
-				
-			});
-			addEvent(new CentralBankEvent(POTATOE));
-		} catch (SocketTimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		});
+		addEvent(new GrowthEvent(0, GROWTH_RATE, false) {
+
+			@Override
+			protected void execute(ICountry sim) {
+				IConsumer cons = growthLoader.createConsumer(sim, MAX_AGE, workerEndowment, create(0));
+				sim.add(cons);
+			}
+
+		});
+		addEvent(new CentralBankEvent(POTATOE));
 	}
-	
+
 	@Override
 	public CobbDouglasProductionWithFixedCost createProductionFunction(Good desiredOutput) {
 		assert desiredOutput.equals(POTATOE);
 		return new CobbDouglasProductionWithFixedCost(POTATOE, 3.0, FIXED_COSTS, new Weight(LAND, 0.2, true), new Weight(MAN_HOUR, 0.6));
 	}
-	
+
 	@Override
 	public int getMaxAge() {
 		return MAX_AGE;
@@ -105,5 +98,5 @@ public class GrowthConfiguration extends FarmingConfiguration implements IUtilit
 	public static void main(String[] args) {
 		System.out.println("asdasd");
 	}
-	
+
 }

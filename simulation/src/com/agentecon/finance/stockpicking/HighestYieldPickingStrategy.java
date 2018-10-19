@@ -1,4 +1,4 @@
-package com.agentecon.finance;
+package com.agentecon.finance.stockpicking;
 
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Ticker;

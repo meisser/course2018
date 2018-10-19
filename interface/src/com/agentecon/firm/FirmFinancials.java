@@ -22,29 +22,44 @@ public class FirmFinancials {
 		this.general = stats;
 	}
 	
+	/**
+	 * How many days this firm existed already.
+	 */
 	public int getFirmAge() {
 		return firm.getAge();
 	}
 	
+	/**
+	 * The type string of the firm, e.g. "team100-Farm".
+	 */
 	public String getType() {
 		return firm.getType();
 	}
 	
+	/**
+	 * The total value of all the assets (land, potatoes, stocks, etc.) owned by the firm at the latest market prices.
+	 */
 	public double getAssets() {
 		return firm.getWealth(general);
 	}
 	
 	/**
-	 * Latest total dividends paid out to share holders.
+	 * Latest total dividends paid out to shareholders.
 	 */
 	public double getLatestDividend() {
 		return firm.getShareRegister().getLatestDividend();
 	}
 	
+	/**
+	 * The number of shares not owned by the firm itself.
+	 */
 	public double getOutstandingShares() {
 		return firm.getShareRegister().getFreeFloatShares();
 	}
 	
+	/**
+	 * The net cash flows. This is the same as profits in the absence of capital gains/losses.
+	 */
 	public double getCashflow() {
 		return getTotalIncomingCash() - getTotalOutgoingCash();
 	}
@@ -74,16 +89,26 @@ public class FirmFinancials {
 		return sharePurchases + getCostsOfGoodsSold();
 	}
 	
+	/**
+	 * The latest income from selling goods on the goods market. 
+	 */
 	public double getSales() {
 		Ticker t = firm.getTicker();
 		return general.getGoodsMarketStats().getFirmStats(t).getSales();
 	}
 	
+	/**
+	 * The latest amount spent on goods on the goods market.
+	 * @return
+	 */
 	public double getCostsOfGoodsSold() {
 		Ticker t = firm.getTicker();
 		return general.getGoodsMarketStats().getFirmStats(t).getSpendings();
 	}
 	
+	/**
+	 * The latest income from dividends.
+	 */
 	public double getDividendIncome() {
 		if (firm instanceof IShareholder) {
 			return ((IShareholder)firm).getPortfolio().getLatestDividendIncome();

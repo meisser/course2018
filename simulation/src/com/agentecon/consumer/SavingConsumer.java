@@ -106,9 +106,4 @@ public class SavingConsumer extends MortalConsumer implements IFounder {
 		super.trade(reducedInv, market);
 	}
 
-	@Override
-	public double consume() {
-		return super.consume();
-	}
-
 }

@@ -12,6 +12,7 @@ import com.agentecon.agent.IAgents;
 import com.agentecon.configuration.GrowthConfiguration;
 import com.agentecon.configuration.IConfiguration;
 import com.agentecon.events.SimEvent;
+import com.agentecon.exercises.StocksConfigurationEx5;
 import com.agentecon.finance.StockMarket;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IDiscountRate;
@@ -43,7 +44,7 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	private MarketStatistics goodsMarketStats;
 
 	public Simulation() throws IOException {
-		this(new GrowthConfiguration());
+		this(new StocksConfigurationEx5());
 	}
 	
 	public Simulation(IConfiguration metaConfig) {
