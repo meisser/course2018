@@ -50,9 +50,13 @@ public class AgentCompiler implements DiagnosticListener<JavaFileObject> {
 			}
 			assert byteCode != null;
 			return byteCode;
-		} catch (CompilerRuntimeException e) {
-			throw new ClassNotFoundException("Could not load " + name, e);
-		} catch (IOException e) {
+		} catch (IOException | RuntimeException e) { // CompilerRuntimeException
+//			Previously, only CompilerRuntimeException was caught. But apparently, it sometimes also throws a RuntimeException:
+//			java.lang.RuntimeException: java.lang.RuntimeException: com.agentecon.classloader.CompilerRuntimeException: com/agentecon/exercise5/StockPickingStrategy.java:15: error: package com.sun.xml.internal.ws.dump.LoggingDumpTube does not exist
+//			import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
+//			        at sun.reflect.GeneratedConstructorAccessor54.newInstance(Unknown Source)
+//			        at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+//			        at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
 			throw new ClassNotFoundException("Could not load " + name, e);
 		}
 	}
