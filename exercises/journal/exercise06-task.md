@@ -38,4 +38,4 @@ Your rule should be simple, but also be statistically significant (t-stats above
 
 Document your findings in the [lab journal](exercise06-journal.md), including an equation describing the relation between flows and prices, as well as the results of you statistic tests. No need to run the simulation yourself this time or to do any programming.
 
-The deadline for submitting the lab journal to github is 2017-11-02 at 24:00.
+The deadline for submitting the lab journal to github is 2018-11-01 at 24:00.
