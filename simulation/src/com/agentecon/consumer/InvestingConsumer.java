@@ -38,7 +38,7 @@ import com.agentecon.util.Numbers;
  */
 public class InvestingConsumer extends MortalConsumer implements IFounder {
 
-	private static final double DISCOUNT_RATE = 0.995;
+	private static final double DISCOUNT_RATE = 0.99;
 
 	private static final double CAPITAL_BUFFER = 0.80;
 	public static final double MINIMUM_WORKING_HOURS = 8;
