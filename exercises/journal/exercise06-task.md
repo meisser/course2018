@@ -18,13 +18,13 @@ ${inflow}_t = {outflow}_t$
 
 whereas ${inflow}_t$ is the amount invested into the stock market and ${outflow}_t = {price}_t * n_t$, with $n_t$ being the number of shares that are sold on day $t$. This also hold in our model when including the trades of the market makers in the inflow and outflow. However, we want to know how the inflow and outflow of the consumers impact the stock market. Thus, the flows given in the data exclude those of the market maker. Under these circumstances, the above equation no longer holds, which you can easily verify by observing that ${inflow}_t \neq {outflow}_t$ in the provided data on most days.
 
-The log returns provided are simple the daily percentage changes. The advantage of using log returns is that you can simply add them up to get cummulative returns, whereas percentage returns need to be multiplied.
+Note that it is often useful to calculate log returns. The advantage of using log returns is that you can simply add them up to get cummulative returns, whereas percentage returns need to be multiplied.
 
 $\frac{p_t}{p_{t-2}} = \frac{p_t}{p_{t-1}} \frac{p_{t-1}}{p_{t-2}} = e^{ln \frac{p_t}{p_{t-1}} + ln \frac{p_{t-1}}{p_{t-2}}}$
 
 Economists often use natural log returns by default and rarely ever convert back.
 
-For the task at hand, you should **ignore all data before day 2000**. Also, you can focus entirely on the index, which represents a weighted average of the two stock types. Volume represents the number of shares traded. Dividend yield is (dividend per share) / (share price).
+For the task at hand, you should **ignore all data before day 2000**. Also, you can disregard the individual firm types and focus on the index, which represents a weighted average of the two types. Volume represents the number of shares traded. Dividend yield is (dividend per share) / (share price).
 
 ## Task
 
