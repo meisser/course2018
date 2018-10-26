@@ -62,7 +62,6 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 		createBasicPopulation(workerEndowment);
 		addMarketMakers();
 		addEvent(new CentralBankEvent(POTATOE));
-//		addCustomInvestors(loader, workerEndowment);
 	}
 	
 	@Override

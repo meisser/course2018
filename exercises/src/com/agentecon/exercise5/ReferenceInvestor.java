@@ -6,14 +6,15 @@
  * Feel free to reuse this code under the MIT License
  * https://opensource.org/licenses/MIT
  */
-package com.agentecon.consumer;
+package com.agentecon.exercise5;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
+import com.agentecon.consumer.IUtility;
+import com.agentecon.consumer.MortalConsumer;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.Firm;
-import com.agentecon.finance.stockpicking.EqualWeightStockPickingStrategy;
 import com.agentecon.finance.stockpicking.HighestYieldPickingStrategy;
 import com.agentecon.firm.DefaultFarm;
 import com.agentecon.firm.IFirm;
@@ -36,7 +37,7 @@ import com.agentecon.util.Numbers;
  * Unlike the Hermit, the farmer can decide to work at other farms and to buy from others. To formalize these relationships, the farmer does not produce himself anymore, but instead uses his land to
  * found a profit-maximizing firm.
  */
-public class InvestingConsumer extends MortalConsumer implements IFounder {
+public class ReferenceInvestor extends MortalConsumer implements IFounder {
 
 	private static final double DISCOUNT_RATE = 0.995;
 
@@ -45,7 +46,7 @@ public class InvestingConsumer extends MortalConsumer implements IFounder {
 
 	private Good manhours;
 
-	public InvestingConsumer(IAgentIdGenerator id, int maxAge, Endowment end, IUtility utility) {
+	public ReferenceInvestor(IAgentIdGenerator id, int maxAge, Endowment end, IUtility utility) {
 		super(id, maxAge, end, utility);
 		this.manhours = end.getDaily()[0].getGood();
 		assert this.manhours.equals(FarmingConfiguration.MAN_HOUR);
@@ -63,7 +64,7 @@ public class InvestingConsumer extends MortalConsumer implements IFounder {
 			double dividends = getPortfolio().getLatestDividendIncome();
 			double constantFactor = Numbers.geometricSum(DISCOUNT_RATE, daysToRetirement);
 			double consumption = getDailySpendings();
-			double optimalSavings = (consumption * (daysLeft - 1) - dividends / (1 - DISCOUNT_RATE)) / constantFactor + dividends - consumption;
+			double optimalSavings = (consumption * (daysLeft - 1) - dividends / (1 - DISCOUNT_RATE)) / constantFactor + dividends - getDailySpendings();
 			double actualInvestment = getPortfolio().invest(new HighestYieldPickingStrategy(), stocks, this, optimalSavings);
 			listeners.notifyInvested(this, actualInvestment); // notify listeners for inflow / outflow statistics
 		}
