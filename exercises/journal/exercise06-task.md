@@ -24,7 +24,7 @@ $\frac{p_t}{p_{t-2}} = \frac{p_t}{p_{t-1}} \frac{p_{t-1}}{p_{t-2}} = e^{ln \frac
 
 Economists often use natural log returns by default and rarely ever convert back.
 
-For the task at hand, you should **ignore all data before day 2000**. Also, you can ignore the data of the individual stocks and focus entirely on the index, which represents a weighted average of the two stocks. Volume represents the number of shares traded, but you can already get the full score without using volume data at all.
+For the task at hand, you should **ignore all data before day 2000**. Also, you can focus entirely on the index, which represents a weighted average of the two stock types. Volume represents the number of shares traded. Dividend yield is (dividend per share) / (share price).
 
 ## Task
 
