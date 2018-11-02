@@ -14,7 +14,7 @@ Looking at the [equality statistics](http://meissereconomics.com/vis/simulation?
 
 If you run the [LifeExpectancyConfiguration](../src/com/agentecon/exercise7/LifeExpectancyConfiguration.java) locally, it lets you output the wealth distribution at a specific day (note that this can take a while). Looking at that data might be helpful in explaining the observed differences between the cohorts.
 
-![sim](images/ex7-gini.png "Wealth inequality in the simulation")
+![sim](images/ex7-gini.jpg "Wealth inequality in the simulation")
 
 ## Task 2
 
