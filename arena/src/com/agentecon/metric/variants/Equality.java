@@ -7,9 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.agentecon.ISimulation;
-import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.IConsumer;
-import com.agentecon.goods.Good;
 import com.agentecon.market.IMarket;
 import com.agentecon.market.IMarketListener;
 import com.agentecon.market.IStatistics;

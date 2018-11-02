@@ -91,5 +91,10 @@ public class StocksConfiguration2 extends HighProductivityConfiguration implemen
 
 		});
 	}
+	
+	@Override
+	public int getMaxAge() {
+		return MAX_AGE;
+	}
 
 }

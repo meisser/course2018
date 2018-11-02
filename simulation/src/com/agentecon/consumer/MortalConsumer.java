@@ -63,6 +63,16 @@ public class MortalConsumer extends Consumer {
 	public int getRetirementAge() {
 		return maxAge / 5 * 4;
 	}
+	
+	@Override
+	public double consume() {
+		if (isRetired()) {
+			// Let retirees only enjoy half of their time.
+			// Purpose: make utility difference between work age and retirement age smaller.
+			getInventory().getStock(getManHours()).remove(12.0);
+		}
+		return super.consume();
+	}
 
 	@Override
 	public MortalConsumer clone() {

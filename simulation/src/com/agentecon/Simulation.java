@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import com.agentecon.agent.IAgents;
+import com.agentecon.configuration.CustomConfiguration;
 import com.agentecon.configuration.FlowConfiguration;
 import com.agentecon.configuration.IConfiguration;
 import com.agentecon.events.SimEvent;
@@ -43,7 +44,7 @@ public class Simulation implements ISimulation, IStatistics, IIteratedSimulation
 	private MarketStatistics goodsMarketStats;
 
 	public Simulation() throws IOException {
-		this(new FlowConfiguration());
+		this(new CustomConfiguration("com.agentecon.exercise7.LifeExpectancyConfiguration"));
 	}
 	
 	public Simulation(IConfiguration metaConfig) {
