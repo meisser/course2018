@@ -8,7 +8,7 @@ import com.agentecon.configuration.FlowConfiguration;
 
 public class LifeExpectancyConfiguration extends FlowConfiguration {
 	
-	private static final int MAX_AGE = 1000; // life expectancy. Retirement is defined in MortalConsumer to start at 80% of max age.
+	private static final int MAX_AGE = 500; // life expectancy. Retirement is defined in MortalConsumer to start at 80% of max age.
 
 	public LifeExpectancyConfiguration() throws SocketTimeoutException, IOException {
 		super(MAX_AGE);
