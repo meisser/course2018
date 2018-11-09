@@ -24,12 +24,12 @@ import com.agentecon.util.Average;
 public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, IMarketParticipant {
 
 	private Portfolio portfolio;
-	private HashMap<Ticker, AbstractMarketMaking> priceBeliefs;
+	private HashMap<Ticker, MarketMaking> priceBeliefs;
 
 	public MarketMaker(IAgentIdGenerator id, IStock money, Collection<IFirm> firms) {
 		super(id, new Endowment(money));
 		this.portfolio = new Portfolio(getMoney(), false);
-		this.priceBeliefs = new HashMap<Ticker, AbstractMarketMaking>();
+		this.priceBeliefs = new HashMap<Ticker, MarketMaking>();
 		for (IFirm firm : firms) {
 			notifyFirmCreated(firm);
 		}
@@ -45,7 +45,7 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 	}
 
 	public void postOffers(IPriceMakerMarket dsm) {
-		for (AbstractMarketMaking e : priceBeliefs.values()) {
+		for (MarketMaking e : priceBeliefs.values()) {
 			e.trade(dsm, this);
 		}
 	}
@@ -59,16 +59,17 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 	public void notifyFirmCreated(IFirm firm) {
 		Position pos = firm.getShareRegister().createPosition(false);
 		portfolio.addPosition(pos);
-		AbstractMarketMaking price = createPriceBelief(getMoney(), pos, 10.0, 2);
-		AbstractMarketMaking prev = priceBeliefs.put(pos.getTicker(), price);
+		MarketMaking price = createPriceBelief(getMoney(), pos);
+		MarketMaking prev = priceBeliefs.put(pos.getTicker(), price);
 		assert prev == null;
 	}
 
-	protected MarketMaking createPriceBelief(IStock wallet, Position pos, double initialPrice, double targetShareCount) {
+	protected MarketMaking createPriceBelief(IStock wallet, Position pos) {
 		ISubStock subWallet = wallet.createSubAccount(1.0, 1.0 / (priceBeliefs.size() + 10));
-		return new MarketMaking(subWallet, pos, initialPrice, targetShareCount) {
+		return new MarketMaking(subWallet, pos) {
 			@Override
-			protected void increaseSpreadSomeMore() {
+			protected void increaseSpread() {
+				super.increaseSpread();
 				if (subWallet.getAmount() > 1.0) {
 					subWallet.pushToParent(0.02);
 				}
@@ -87,12 +88,12 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 
 	@Override
 	public double getBid(Ticker ticker) {
-		return priceBeliefs.get(ticker).getBid();
+		return priceBeliefs.get(ticker).getBidPrice();
 	}
 
 	@Override
 	public double getAsk(Ticker ticker) {
-		return priceBeliefs.get(ticker).getAsk();
+		return priceBeliefs.get(ticker).getAskPrice();
 	}
 
 	public Average getAverageOwnershipShare() {
@@ -106,7 +107,7 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 
 	private Average getIndex() {
 		Average avg = new Average();
-		for (AbstractMarketMaking mmp : priceBeliefs.values()) {
+		for (MarketMaking mmp : priceBeliefs.values()) {
 			avg.add(mmp.getPrice());
 		}
 		return avg;
@@ -115,8 +116,8 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 	@Override
 	protected double calculateDividends(int day) {
 		double tiedCash = 0.0;
-		for (AbstractMarketMaking mm: priceBeliefs.values()) {
-			tiedCash += mm.getWallet().getAmount();
+		for (MarketMaking mm: priceBeliefs.values()) {
+			tiedCash += mm.getBoundCash();
 		}
 		double cash = getMoney().getAmount();
 		return (cash - tiedCash) / 10;

@@ -9,38 +9,41 @@
 package com.agentecon.finance;
 
 import com.agentecon.agent.IAgent;
+import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
-import com.agentecon.learning.ConstantFactorBelief;
+import com.agentecon.learning.ExpSearchBelief;
 import com.agentecon.learning.IBelief;
+import com.agentecon.market.Ask;
+import com.agentecon.market.Bid;
 import com.agentecon.market.IOffer;
 import com.agentecon.market.IPriceMakerMarket;
+import com.agentecon.market.Price;
 
 /**
- * Exercise 8: implement this class such that it passes as many tests as possible.
- * 
- * To run the test, right-click on "MarketMakingTest" and choose "Debug as.." "JUnit Test".
- * 
- * Feel free to get inspired by my (futile) attempts, MarketMakingOldVersion and MarketMakingWithSpreadBelief.
+ * A class to do market making for a single stock.
  */
-public class MarketMaking extends AbstractMarketMaking {
+public class MarketMaking {
 
 	private static final double SPENDING_FRACTION = 0.2;
 
 	private static final double MAX_PRICE = 100000;
+	
+	private IStock position;
+	private IStock wallet;
 
 	private IBelief bidSizeInShares;
 	private IBelief askSizeInMoney;
 
-	private IOffer prevBid, prevAsk;
+	private IOffer prevBid;
+	private IOffer prevAsk;
 
-	public MarketMaking(IStock wallet, IStock shares, double initialPrice, double targetInventoryInNumberOfShares) {
-		super(wallet, shares);
-
-		this.bidSizeInShares = new ConstantFactorBelief(targetInventoryInNumberOfShares, 0.03);
-		this.askSizeInMoney = new ConstantFactorBelief(initialPrice * targetInventoryInNumberOfShares, 0.03);
+	public MarketMaking(IStock wallet, IStock shares) {
+		this.wallet = wallet;
+		this.position = shares;
+		this.bidSizeInShares = new ExpSearchBelief();
+		this.askSizeInMoney = new ExpSearchBelief();
 	}
 	
-	@Override
 	public void trade(IPriceMakerMarket market, IAgent owner) {
 		if (prevAsk != null) {
 			adjustAskSize(prevAsk.isUsed());
@@ -49,9 +52,17 @@ public class MarketMaking extends AbstractMarketMaking {
 			adjustBidSize(prevBid.isUsed());
 		}
 		ensurePositiveSpread();
-		double bid = getBid(); // use the value before placing the ask, as the ask might lead to a change
-		prevAsk = super.placeAsk(market, owner, getPosition().getAmount() * SPENDING_FRACTION, getAsk());
-		prevBid = super.placeBid(market, owner, bidSizeInShares.getValue(), bid);
+		double bid = getBidPrice(); // use the value before placing the ask, as the ask might lead to a change
+		prevAsk = placeAsk(market, owner, getAskSizeInShares(), getAskPrice());
+		prevBid = placeBid(market, owner, getBidSizeInShares(), bid);
+	}
+	
+	protected double getBidSizeInShares() {
+		return bidSizeInShares.getValue();
+	}
+
+	protected double getAskSizeInShares() {
+		return position.getAmount() * SPENDING_FRACTION;
 	}
 
 	protected void adjustAskSize(boolean upwards) {
@@ -63,38 +74,87 @@ public class MarketMaking extends AbstractMarketMaking {
 	}
 
 	private void ensurePositiveSpread() {
-		double bid = getBid();
-		double ask = getAsk();
+		double bid = getBidPrice();
+		double ask = getAskPrice();
 		while (bid > ask) {
-			adjustAskSize(true);
-			ask = getAsk();
-			bid = getBid();
-			increaseSpreadSomeMore();
-			ask = getAsk();
-			bid = getBid();
-			adjustBidSize(true);
-			ask = getAsk();
-			bid = getBid();
+			increaseSpread();
+			ask = getAskPrice();
+			bid = getBidPrice();
 		}
 	}
 
-	protected void increaseSpreadSomeMore() {
-		bidSizeInShares.adapt(true);
+	protected void increaseSpread() {
+		adjustAskSize(true);
+		adjustBidSize(true);
 	}
 
-	@Override
-	public double getBid() {
-		return getWallet().getAmount() * SPENDING_FRACTION / bidSizeInShares.getValue();
+	public double getBidPrice() {
+		return wallet.getAmount() * SPENDING_FRACTION / getBidSizeInShares();
 	}
 
-	@Override
-	public double getAsk() {
-		IStock pos = getPosition();
-		if (pos.isEmpty()) {
+	public double getAskPrice() {
+		if (position.isEmpty()) {
 			return MAX_PRICE;
 		} else {
-			return askSizeInMoney.getValue() / getPosition().getAmount() * SPENDING_FRACTION;
+			return askSizeInMoney.getValue() / getAskSizeInShares();
 		}
+	}
+	
+	protected IOffer placeBid(IPriceMakerMarket dsm, IAgent owner, double sharesToBuy, double price) {
+		if (sharesToBuy > 0.0) {
+			Bid bid = createBid(owner, sharesToBuy, price);
+			dsm.offer(bid);
+			return bid;
+		} else {
+			return null;
+		}
+	}
+
+	protected Bid createBid(IAgent owner, double sharesToBuy, double price) {
+		if (position instanceof Position) {
+			return new BidFin(owner, wallet, (Position) position, new Price(position.getGood(), price), sharesToBuy);
+		} else {
+			return new Bid(owner, wallet, position, price, sharesToBuy);
+		}
+	}
+
+	protected IOffer placeAsk(IPriceMakerMarket dsm, IAgent owner, double sharesToOffer) {
+		return placeAsk(dsm, owner, sharesToOffer, getAskPrice());
+	}
+
+	protected IOffer placeAsk(IPriceMakerMarket dsm, IAgent owner, double sharesToOffer, double price) {
+		if (sharesToOffer > 0.0) {
+			Ask ask = createAsk(owner, sharesToOffer, price);
+			dsm.offer(ask);
+			return ask;
+		} else {
+			return null;
+		}
+	}
+
+	protected Ask createAsk(IAgent owner, double sharesToOffer, double price) {
+		if (position instanceof Position) {
+			return new AskFin(owner, wallet, (Position) position, new Price(position.getGood(), price), sharesToOffer);
+		} else {
+			return new Ask(owner, wallet, position, new Price(position.getGood(), price), sharesToOffer);
+		}
+	}
+
+	public double getPrice() {
+		return (getBidPrice() + getAskPrice()) / 2;
+	}
+
+	public double getSpread() {
+		return getAskPrice() - getBidPrice();
+	}
+	
+	public double getBoundCash() {
+		return wallet.getAmount();
+	}
+
+	@Override
+	public String toString() {
+		return getBidPrice() + " to " + getAskPrice();
 	}
 
 }

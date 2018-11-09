@@ -52,7 +52,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 
 	private static final double LAND_ENDOWMENT = 100;
 
-	public static final int ROUNDS = 5000;
+	public static final int ROUNDS = 10000;
 
 	public static final Quantity FIXED_COSTS = HermitConfiguration.FIXED_COSTS;
 
