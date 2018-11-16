@@ -15,6 +15,7 @@ import com.agentecon.classloader.RemoteLoader;
 import com.agentecon.classloader.SimulationHandle;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
+import com.agentecon.firm.IFirm;
 
 public class ExerciseAgentFactory implements IAgentFactory {
 
@@ -98,6 +99,38 @@ public class ExerciseAgentFactory implements IAgentFactory {
 				return null;
 			} catch (NoSuchMethodException e) {
 				throw new RuntimeException(e);
+			} catch (SecurityException e) {
+				throw new RuntimeException(e);
+			} catch (InstantiationException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalArgumentException e) {
+				throw new RuntimeException(e);
+			} catch (InvocationTargetException e) {
+				throw new RuntimeException(e);
+			}
+		} catch (RuntimeException e) {
+			System.out.println("Could not load consumer from " + this);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@Override
+	public IFirm createFirm(IAgentIdGenerator id, Endowment end) {
+		try {
+			try {
+				@SuppressWarnings("unchecked")
+				Class<? extends IFirm> clazz = (Class<? extends IFirm>) loader.loadClass(classname);
+				Constructor<? extends IFirm> constructor = clazz.getConstructor(IAgentIdGenerator.class, Endowment.class);
+				assert clazz.getClassLoader() == loader;
+				return constructor.newInstance(id, end);
+			} catch (ClassNotFoundException e) {
+				System.err.println("Could not load " + classname + " from " + loader + " due to " + e);
+				return null;
+			} catch (NoSuchMethodException e) {
+				return null;
 			} catch (SecurityException e) {
 				throw new RuntimeException(e);
 			} catch (InstantiationException e) {

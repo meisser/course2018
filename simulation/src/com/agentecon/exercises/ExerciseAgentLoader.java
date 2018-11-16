@@ -21,27 +21,19 @@ import com.agentecon.configuration.AgentFactoryMultiplex;
 import com.agentecon.sim.SimulationConfig;
 
 public class ExerciseAgentLoader extends AgentFactoryMultiplex {
-	
-	public static final String REFERENCE_REPO = "course2018";
+
+	public static final String DEFAULT_REPO = "course2018";
 
 	public static final Collection<String> TEAMS = createRepos(0, 1, 2, 3, 4, 5);
 
-	private IAgentFactory defaultFactory;
-
 	public ExerciseAgentLoader(String classname) throws SocketTimeoutException, IOException {
-		this(classname, null, SimulationConfig.shouldLoadRemoteTeams());
+		this(classname, SimulationConfig.shouldLoadRemoteTeams());
 	}
 
-	public ExerciseAgentLoader(String classname, String referenceAgent) throws SocketTimeoutException, IOException {
-		this(classname, referenceAgent, SimulationConfig.shouldLoadRemoteTeams());
-	}
-
-	private ExerciseAgentLoader(String classname, String referenceAgent, boolean remoteTeams) throws SocketTimeoutException, IOException {
-		super(createFactories(classname, referenceAgent, remoteTeams));
+	public ExerciseAgentLoader(String classname, boolean remoteTeams) throws SocketTimeoutException, IOException {
+		super(remoteTeams ? new ExerciseAgentFactory(classname, "meisser", DEFAULT_REPO) : new ExerciseAgentFactory(classname), false);
 		if (remoteTeams) {
-			defaultFactory = new ExerciseAgentFactory(classname, "meisser", REFERENCE_REPO);
-		} else {
-			defaultFactory = new ExerciseAgentFactory(classname);
+			addFactories(classname, remoteTeams);
 		}
 	}
 
@@ -54,18 +46,13 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 		return repos;
 	}
 
-	private static IAgentFactory[] createFactories(String classname, String referenceAgent, boolean remoteTeams) throws SocketTimeoutException, IOException {
-		ArrayList<IAgentFactory> factories = new ArrayList<>();
-		if (remoteTeams) {
-			Stream<ExerciseAgentFactory> stream = TEAMS.parallelStream().map(team -> {
-				return createFactory(classname, team);
-			}).filter(factory -> factory != null);
-			factories.addAll(stream.collect(Collectors.toList()));
-			if (referenceAgent != null) {
-				factories.add(createFactory(referenceAgent, REFERENCE_REPO));
-			}
+	private void addFactories(String classname, boolean remoteTeams) throws SocketTimeoutException, IOException {
+		Stream<ExerciseAgentFactory> stream = TEAMS.parallelStream().map(team -> {
+			return createFactory(classname, team);
+		}).filter(factory -> factory != null);
+		for (IAgentFactory factory : stream.collect(Collectors.toList())) {
+			super.addFactory(factory);
 		}
-		return factories.toArray(new IAgentFactory[factories.size()]);
 	}
 
 	protected static ExerciseAgentFactory createFactory(String classname, String team) {
@@ -81,11 +68,6 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 		} catch (IOException e) {
 			return null;
 		}
-	}
-
-	@Override
-	protected IAgentFactory getDefaultFactory() {
-		return defaultFactory;
 	}
 
 }

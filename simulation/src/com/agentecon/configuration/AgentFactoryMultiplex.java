@@ -8,9 +8,9 @@
  */
 package com.agentecon.configuration;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
 import com.agentecon.IAgentFactory;
 import com.agentecon.agent.Endowment;
@@ -18,32 +18,36 @@ import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.consumer.Consumer;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
+import com.agentecon.firm.IFirm;
+import com.agentecon.production.IProductionFunction;
 
 public class AgentFactoryMultiplex implements IAgentFactory {
 
 	private int current;
-	private IAgentFactory[] factories;
-
-	public AgentFactoryMultiplex(IAgentFactory... factories) throws IOException {
-		if (factories.length == 0) {
-			this.factories = new IAgentFactory[] { new IAgentFactory() {
-
-				@Override
-				public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
-					return null;
-				}
-			} };
-		} else {
-			this.factories = factories;
-		}
+	private boolean keepDefault;
+	private IAgentFactory defaultFactory;
+	private ArrayList<IAgentFactory> factories;
+	
+	public AgentFactoryMultiplex(IAgentFactory defaultFactory, boolean keepDefault) {
+		assert defaultFactory != null;
+		this.defaultFactory = defaultFactory;
+		this.keepDefault = keepDefault;
 		this.current = 0;
+		this.factories = new ArrayList<>();
+		this.factories.add(defaultFactory);
 	}
 
 	public AgentFactoryMultiplex(Class<? extends IConsumer>[] agents) {
-		this.factories = new IAgentFactory[agents.length];
+		this(new IAgentFactory() {
+				
+				@Override
+				public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
+					return new Consumer(id, endowment, utilityFunction);
+				}
+			}, false);
 		for (int i = 0; i < agents.length; i++) {
 			final Class<? extends IConsumer> current = agents[i];
-			this.factories[i] = new IAgentFactory() {
+			addFactory(new IAgentFactory() {
 				
 				@Override
 				public IConsumer createConsumer(IAgentIdGenerator id, int maxAge, Endowment endowment, IUtility utilityFunction) {
@@ -65,24 +69,27 @@ public class AgentFactoryMultiplex implements IAgentFactory {
 						return null;
 					}
 				}
-			};
+			});
+		}
+	}
+
+	protected void addFactory(IAgentFactory factory) {
+		assert factory != defaultFactory;
+		if (!keepDefault && factories.size() == 1 && factories.get(0) == defaultFactory) {
+			factories.set(0, factory);
+		} else {
+			factories.add(factory);
 		}
 	}
 
 	private IAgentFactory getCurrent() {
-		return factories[current++ % factories.length];
+		return factories.get(current++ % factories.size());
 	}
 	
-	protected IAgentFactory getDefaultFactory() {
-		return new IAgentFactory() {
-			
-			@Override
-			public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
-				return new Consumer(id, endowment, utilityFunction);
-			}
-		};
+	private IAgentFactory getDefaultFactory() {
+		 return defaultFactory;
 	}
-
+	
 	@Override
 	public IConsumer createConsumer(IAgentIdGenerator id, int maxAge, Endowment endowment, IUtility utilityFunction) {
 		IAgentFactory current = getCurrent();
@@ -95,6 +102,20 @@ public class AgentFactoryMultiplex implements IAgentFactory {
 		IAgentFactory current = getCurrent();
 		IConsumer consumer = current.createConsumer(id, endowment, utilityFunction);
 		return consumer == null ? getDefaultFactory().createConsumer(id, endowment, utilityFunction) : consumer;
+	}
+	
+	@Override
+	public IFirm createFirm(IAgentIdGenerator id, Endowment end) {
+		IAgentFactory current = getCurrent();
+		IFirm firm = current.createFirm(id, end);
+		return firm == null ? getDefaultFactory().createFirm(id, end) : firm;
+	}
+	
+	@Override
+	public IFirm createFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
+		IAgentFactory current = getCurrent();
+		IFirm firm = current.createFirm(id, end, prodFun);
+		return firm == null ? getDefaultFactory().createFirm(id, end, prodFun) : firm;
 	}
 	
 }

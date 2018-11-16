@@ -13,7 +13,6 @@ import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.exercises.FarmingConfiguration;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.finance.Firm;
-import com.agentecon.finance.stockpicking.EqualWeightStockPickingStrategy;
 import com.agentecon.finance.stockpicking.HighestYieldPickingStrategy;
 import com.agentecon.firm.DefaultFarm;
 import com.agentecon.firm.IFirm;
@@ -64,7 +63,7 @@ public class InvestingConsumer extends MortalConsumer implements IFounder {
 			double constantFactor = Numbers.geometricSum(DISCOUNT_RATE, daysToRetirement);
 			double consumption = getDailySpendings();
 			double optimalSavings = (consumption * (daysLeft - 1) - dividends / (1 - DISCOUNT_RATE)) / constantFactor + dividends - consumption;
-			double actualInvestment = getPortfolio().invest(new HighestYieldPickingStrategy(), stocks, this, optimalSavings);
+			double actualInvestment = getPortfolio().invest(new HighestYieldPickingStrategy(false), stocks, this, optimalSavings);
 			listeners.notifyInvested(this, actualInvestment); // notify listeners for inflow / outflow statistics
 		}
 	}

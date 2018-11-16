@@ -8,9 +8,6 @@
  */
 package com.agentecon.configuration;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-
 import com.agentecon.IAgentFactory;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
@@ -33,8 +30,7 @@ import com.agentecon.world.ICountry;
 
 public class GrowthConfiguration extends FarmingConfiguration implements IUtilityFactory, IInnovation {
 
-	private static final boolean INCLUDE_REFERENCE_AGENT = true;
-	private static final int BASIC_AGENTS = 5 * (INCLUDE_REFERENCE_AGENT ? ExerciseAgentLoader.TEAMS.size() + 1 : ExerciseAgentLoader.TEAMS.size());
+	private static final int BASIC_AGENTS = 5 * ExerciseAgentLoader.TEAMS.size();
 	public static final String FARMER = "com.agentecon.exercise4.Farmer";
 
 	public static final double GROWTH_RATE = 0.0023;
@@ -43,10 +39,6 @@ public class GrowthConfiguration extends FarmingConfiguration implements IUtilit
 	@SafeVarargs
 	public GrowthConfiguration(Class<? extends Consumer>... agents) {
 		this(new AgentFactoryMultiplex(agents), BASIC_AGENTS);
-	}
-
-	public GrowthConfiguration() throws SocketTimeoutException, IOException {
-		this(new ExerciseAgentLoader(FARMER, INCLUDE_REFERENCE_AGENT ? "com.agentecon.exercise4.ReferenceFarmer" : null), BASIC_AGENTS);
 	}
 
 	public GrowthConfiguration(IAgentFactory loader, int agents) {
