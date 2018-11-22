@@ -54,9 +54,9 @@ public enum EMetrics {
 		case DEMOGRAPHICS:
 			return "The size of the population and related figures.";
 		case DIVIDENDS:
-			return "Average dividend payments of firms.";
+			return "Dividends paid out to free float shareholders (no dividend is paid to firm itself). For firm types, the average over all instances is calculated.";
 		case DIVIDENDS_TO_CONSUMERS:
-			return "Average amount of dividends paid by firms to consumer shareholders.";
+			return "Daily real dividends paid to consumers. To calculate real dividends, nominal dividends are divided by the price index of the goods market. For firm types, the average over all instances is calculated.";
 		case EQUALITY:
 			return "Gini co-efficient for various cohorts over time. A low value implies more equality.";
 		case RANKING_CONSUMERS:
@@ -95,9 +95,9 @@ public enum EMetrics {
 		case DEMOGRAPHICS:
 			return new Demographics(sim);
 		case DIVIDENDS:
-			return new DividendStats(sim, false);
+			return new DividendStats(sim, false, details);
 		case DIVIDENDS_TO_CONSUMERS:
-			return new DividendStats(sim, true);
+			return new DividendStats(sim, true, details);
 		case EQUALITY:
 			return new Equality(sim);
 //		case FIRM:
@@ -115,7 +115,7 @@ public enum EMetrics {
 		case MONETARY:
 			return new MonetaryStats(sim);
 		case OWNERSHIP:
-			return new OwnershipStats(sim);
+			return new OwnershipStats(sim, details);
 		case PRODUCTION:
 			return new ProductionStats(sim, details);
 		case PRODUCTION_DETAILS:

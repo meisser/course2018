@@ -8,6 +8,7 @@ import java.util.Random;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.firm.FirmFinancials;
+import com.agentecon.firm.IBank;
 import com.agentecon.firm.IFinancialMarketData;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
@@ -17,12 +18,14 @@ import com.agentecon.market.Ask;
 import com.agentecon.market.BestPriceMarket;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IMarketListener;
+import com.agentecon.market.IMarketStatistics;
 import com.agentecon.market.MarketListeners;
 import com.agentecon.util.InstantiatingHashMap;
 import com.agentecon.util.Numbers;
 
 public class DailyStockMarket implements IStockMarket {
 
+	private IBank bank;
 	private Random rand;
 	private MarketListeners listeners;
 	private InstantiatingHashMap<Ticker, BestPriceMarket> market;
@@ -30,8 +33,9 @@ public class DailyStockMarket implements IStockMarket {
 
 	private ArrayList<BestPriceMarket> marketCache;
 
-	public DailyStockMarket(IFinancialMarketData bloomberg, Random rand) {
+	public DailyStockMarket(IFinancialMarketData bloomberg, IBank bank, Random rand) {
 		this.rand = rand;
+		this.bank = bank;
 		this.bloomberg = bloomberg;
 		this.listeners = new MarketListeners();
 		this.market = new InstantiatingHashMap<Ticker, BestPriceMarket>() {
@@ -43,6 +47,11 @@ public class DailyStockMarket implements IStockMarket {
 		};
 	}
 
+	@Override
+	public IBank getLeverageProvider() {
+		return bank;
+	}
+	
 	@Override
 	public Collection<Ticker> getTradedStocks() {
 		ArrayList<Ticker> randomList = new ArrayList<>(market.size());
@@ -86,7 +95,7 @@ public class DailyStockMarket implements IStockMarket {
 		this.market.get(ask.getGood()).offer(ask);
 		this.marketCache = null;
 	}
-
+	
 	@Override
 	public Ticker findAnyAsk(List<Ticker> preferred, boolean marketCapWeight) {
 		while (preferred.size() > 0) {
@@ -232,6 +241,11 @@ public class DailyStockMarket implements IStockMarket {
 
 	public void close(int day) {
 		listeners.notifyMarketClosed(day, null);
+	}
+
+	@Override
+	public IMarketStatistics getMarketStatistics() {
+		return bloomberg.getMarketStatistics();
 	}
 
 }

@@ -66,7 +66,7 @@ public abstract class WebApiMethod {
 	 * Dummy execution of this method to refresh the cache
 	 * @throws InterruptedException 
 	 */
-	public void refreshCashe(Parameters params) throws InterruptedException {
+	public void refreshCache(Parameters params) throws InterruptedException {
 		try {
 			getJsonAnswer(params);
 		} catch (IOException e) {

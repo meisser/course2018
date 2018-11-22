@@ -86,7 +86,7 @@ public class Stock implements IStock {
 	public void absorb(IStock s) {
 		assert s.getGood() == getGood();
 		assert this != s;
-		this.amount += s.consume();
+		add(s.consume());
 	}
 
 	@Override

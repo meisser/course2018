@@ -50,10 +50,6 @@ public class Good implements Comparable<Good> {
 		return name;
 	}
 	
-	public String toString_(){
-		return toString().replace(' ', '_');
-	}
-	
 	@Override
 	public int compareTo(Good o) {
 		return name.compareTo(o.name);

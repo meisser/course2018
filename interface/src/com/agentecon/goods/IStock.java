@@ -11,8 +11,16 @@ public interface IStock {
 
 	/**
 	 * The amount that is available. For the HiddenStock class, part of the stock can be hidden.
+	 * In case there is credit available, this includes the available credit.
 	 */
 	public double getAmount();
+	
+	/**
+	 * The net amount stored in this stock. Can be negative if there is credit outstanding. 
+	 */
+	public default double getNetAmount() {
+		return getAmount();
+	}
 
 	/**
 	 * Consumes the available stock.
@@ -36,12 +44,12 @@ public interface IStock {
 		if (amount > 0){
 			this.add(amount);
 			source.remove(amount);
-		} else {
+		} else if (amount < 0){
 			this.remove(-amount);
 			source.add(-amount);
 		}
-		assert source.getAmount() < 1000000000 : "Unreasonably high value of " + getGood() + " accumulated. Is too much money being printed?";
-		assert getAmount() < 1000000000;
+		assert source.getNetAmount() < 1000000000 : "Unreasonably high value of " + getGood() + " accumulated. Is too much money being printed?";
+		assert getNetAmount() < 1000000000;
 	}
 
 	/**

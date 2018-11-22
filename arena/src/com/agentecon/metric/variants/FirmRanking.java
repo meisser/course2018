@@ -81,7 +81,7 @@ public class FirmRanking extends SimStats {
 	public void print(PrintStream out) {
 		Collections.sort(list);
 		int rank = 1;
-		System.out.println("Rank\tType\tId\tAvg Utility");
+		System.out.println("Rank\tType\tId\tDividends");
 		for (FirmListener l : list) {
 			out.println(rank++ + "\t" + l);
 		}

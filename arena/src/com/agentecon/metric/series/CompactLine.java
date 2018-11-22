@@ -12,7 +12,9 @@ public class CompactLine extends Line {
 	}
 
 	public CompactLine(Line line) {
-		super(line);
+		for (Point p: line.getPoints()) {
+			add(p);
+		}
 	}
 
 	@Override

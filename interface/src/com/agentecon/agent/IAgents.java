@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.Inheritance;
+import com.agentecon.firm.IBank;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IShareholder;
 import com.agentecon.firm.Ticker;
@@ -22,6 +23,10 @@ public Collection<? extends IAgent> getAgents();
 	public Collection<? extends IGoodsTrader> getRandomGoodsMarketMakers();
 	
 	public Collection<? extends IShareholder> getShareholders();
+	
+	public default Collection<? extends IBank> getBanks(){
+		return Collections.emptyList();
+	}
 	
 	public IFirm getFirm(Ticker ticker);
 

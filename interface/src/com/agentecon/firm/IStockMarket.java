@@ -20,6 +20,8 @@ public interface IStockMarket extends IPriceMakerMarket, IFinancialMarketData {
 		throw new RuntimeException("Not implemented");
 	}
 	
+	public IBank getLeverageProvider();
+	
 	public Ticker findAnyAsk(List<Ticker> preferred, boolean marketCapWeight);
 	
 	/**

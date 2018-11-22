@@ -3,6 +3,7 @@ package com.agentecon.finance;
 import java.util.Collection;
 import java.util.function.Predicate;
 
+import com.agentecon.firm.IBank;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IShareholder;
@@ -42,7 +43,8 @@ public class StockMarket {
 			shareholder.getPortfolio().collectDividends();
 		}
 		FinancialMarketData financials = new FinancialMarketData(ags, stats);
-		DailyStockMarket dsm = new DailyStockMarket(financials, country.getRand());
+		IBank bank = ags.getBank();
+		DailyStockMarket dsm = new DailyStockMarket(financials, bank, country.getRand());
 		stockStats.notifyMarketOpened();
 		dsm.addMarketListener(stockStats);
 		listeners.notifyStockMarketOpened(dsm);
@@ -56,6 +58,9 @@ public class StockMarket {
 		// System.out.println(day + " trading stats " + dsm.getTradingStats());
 		for (IFirm pc : ags.getFirms()) {
 			pc.raiseCapital(dsm);
+		}
+		if (bank != null) {
+			bank.manageCredit(dsm);
 		}
 		if (ALLOW_FUNDS_BUYING_FUNDS) {
 			runMarket(ags, dsm);

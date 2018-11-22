@@ -4,7 +4,7 @@
     Loading firm ranking...
   </div>
   <div v-if="!loading">
-    <p>Traditionally, firms optimize profits. However, in agent-based simulations, it is more sensible to rank them by total dividends paid to consumer-shareholders. In a world, in which firms are allowed to own each others shares, it would be trivial to create infinite profits just by sending dividends back and forth between two companies that own each other. Thus, we need a more elaborate metric.</p>
+    <p>Firm types ranked by total real dividends paid to consumer-shareholders.</p>
     <table class="agentlist">
       <tr>
         <td>Rank</td>

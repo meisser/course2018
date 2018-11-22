@@ -14,7 +14,7 @@ public interface IShareholder {
 	 * and after dividends have been distributed.
 	 */
 	public void managePortfolio(IStockMarket dsm);
-
+	
 	public default double notifyFirmClosed(Ticker ticker) {
 		return getPortfolio().notifyFirmClosed(ticker);
 	}

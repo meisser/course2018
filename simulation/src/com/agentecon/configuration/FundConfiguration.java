@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import com.agentecon.IAgentFactory;
-import com.agentecon.ReflectiveAgentFactory;
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgentIdGenerator;
-import com.agentecon.classloader.RemoteLoader;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IUtility;
 import com.agentecon.consumer.InvestingConsumer;
@@ -18,19 +16,18 @@ import com.agentecon.events.SinConsumerEvent;
 import com.agentecon.exercises.ExerciseAgentLoader;
 import com.agentecon.exercises.HermitConfiguration;
 import com.agentecon.exercises.HighProductivityConfiguration;
-import com.agentecon.finance.DefaultInvestmentFund;
-import com.agentecon.finance.Fundamentalist;
 import com.agentecon.finance.MarketMaker;
-import com.agentecon.firm.IFirm;
+import com.agentecon.finance.credit.CreditBank;
+import com.agentecon.firm.IBank;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
-import com.agentecon.production.IProductionFunction;
 import com.agentecon.research.IInnovation;
 import com.agentecon.world.ICountry;
 
 public class FundConfiguration extends HighProductivityConfiguration implements IUtilityFactory, IInnovation {
 	
 	public static final String FUND = "com.agentecon.exercise9.InvestmentFund";
+	public static final String LEV_FUND = "com.agentecon.exercise9.LeveragedInvestmentFund";
 
 	private static final int BASIC_AGENTS = 50;
 
@@ -58,9 +55,21 @@ public class FundConfiguration extends HighProductivityConfiguration implements 
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment workerEndowment = new Endowment(getMoney(), new IStock[0], dailyEndowment);
 		createBasicPopulation(workerEndowment);
+		addBank();
 		addMarketMakers();
-		addInvestmentFunds(new ExerciseAgentLoader(FUND), ExerciseAgentLoader.TEAMS.size());
+		addInvestmentFunds(new ExerciseAgentLoader(LEV_FUND), ExerciseAgentLoader.TEAMS.size());
 		addEvent(new CentralBankEvent(POTATOE));
+	}
+
+	private void addBank() {
+		addEvent(new SimEvent(0) {
+
+			@Override
+			public void execute(int day, ICountry sim) {
+				IBank bank = new CreditBank(sim, new Endowment(getMoney()));
+				sim.add(bank);
+			}
+		});
 	}
 
 	protected void addMarketMakers() {

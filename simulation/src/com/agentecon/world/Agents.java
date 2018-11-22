@@ -15,6 +15,7 @@ import com.agentecon.agent.IAgents;
 import com.agentecon.consumer.IConsumer;
 import com.agentecon.consumer.IMarketParticipant;
 import com.agentecon.consumer.Inheritance;
+import com.agentecon.firm.IBank;
 import com.agentecon.firm.IFirm;
 import com.agentecon.firm.IMarketMaker;
 import com.agentecon.firm.IShareholder;
@@ -31,6 +32,7 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	private Random rand;
 	private int agentId;
 
+	private Ticker bank;
 	private HashMap<Integer, Agent> all;
 	private ArrayList<IConsumer> consumers;
 	private HashMap<Ticker, IFirm> firms;
@@ -63,6 +65,19 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	@Override
 	public Collection<Inheritance> getPendingInheritances() {
 		return pendingInheritances;
+	}
+
+	public IBank getBank() {
+		return bank == null ? null : (IBank) firms.get(bank);
+	}
+
+	@Override
+	public Collection<? extends IBank> getBanks() {
+		if (bank == null) {
+			return Collections.emptyList();
+		} else {
+			return Collections.singleton(getBank());
+		}
 	}
 
 	public void addInheritance(Inheritance left) {
@@ -112,6 +127,9 @@ public class Agents implements IAgents, IAgentIdGenerator {
 				for (IMarketMaker mm : marketMakers) {
 					mm.notifyFirmCreated(firm);
 				}
+			}
+			if (agent instanceof IBank) {
+				bank = firm.getTicker();
 			}
 		}
 		if (agent instanceof IShareholder) {

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
 import com.agentecon.consumer.Inheritance;
+import com.agentecon.firm.IBank;
 import com.agentecon.goods.Good;
 import com.agentecon.market.IMarketStatistics;
 import com.agentecon.market.IStatistics;
@@ -21,12 +22,14 @@ public class MonetaryStats extends SimStats {
 
 	private TimeSeries velocity;
 	private TimeSeries moneySupply;
+	private TimeSeries credit;
 	private Map<Good, TimeSeries> prices;
 	private Map<Good, TimeSeries> volumes;
 
 	public MonetaryStats(ISimulation agents) {
 		super(agents);
 		this.moneySupply = new TimeSeries("Money Supply", getMaxDay());
+		this.credit = new TimeSeries("Credit", getMaxDay()).compact();
 		this.prices = new InstantiatingConcurrentHashMap<Good, TimeSeries>() {
 
 			@Override
@@ -50,12 +53,18 @@ public class MonetaryStats extends SimStats {
 
 		double moneySupply = 0.0;
 		for (IAgent a : getAgents().getAgents()) {
-			moneySupply += a.getMoney().getAmount();
+			moneySupply += a.getMoney().getNetAmount();
 		}
 		for (Inheritance pending: getAgents().getPendingInheritances()) {
-			moneySupply += pending.getMoney().getAmount();
+			moneySupply += pending.getMoney().getNetAmount();
 		}
 		this.moneySupply.set(day, moneySupply);
+		
+		double credit = 0.0;
+		for (IBank bank: getAgents().getBanks()) {
+			credit += bank.getOutstandingCredit();
+		}
+		this.credit.set(day, credit);
 
 		double transactionVolume = 0.0;
 		transactionVolume += record(day, stats.getGoodsMarketStats());
@@ -87,6 +96,9 @@ public class MonetaryStats extends SimStats {
 	public Collection<TimeSeries> getTimeSeries() {
 		ArrayList<TimeSeries> list = new ArrayList<>();
 		list.add(moneySupply);
+		if (credit.isInteresting()) {
+			list.add(credit);
+		}
 		list.add(velocity);
 		list.addAll(prices.values());
 		list.addAll(volumes.values());

@@ -8,7 +8,6 @@ public class Line {
 	protected ArrayList<Point> points = new ArrayList<>();
 
 	public Line() {
-		super();
 	}
 
 	public Line(Line line) {

@@ -15,10 +15,10 @@ public class DividendStats extends SimStats {
 	private TimeSeriesCollector collector;
 	private boolean consumer;
 
-	public DividendStats(ISimulation agents, boolean consumer) {
+	public DividendStats(ISimulation agents, boolean consumer, boolean details) {
 		super(agents);
 		this.consumer = consumer;
-		this.collector = new TimeSeriesCollector(getMaxDay());
+		this.collector = new TimeSeriesCollector(details, getMaxDay());
 	}
 
 	@Override
@@ -28,7 +28,10 @@ public class DividendStats extends SimStats {
 			@Override
 			public void reportDividend(IFirm comp, double amount) {
 				if (consumer) {
-					collector.record(getDay(), comp, amount * comp.getShareRegister().getConsumerOwnedShare());
+					double priceLevel = getStats().getGoodsMarketStats().getPriceIndex();
+					if (!Double.isNaN(priceLevel)) {
+						collector.record(getDay(), comp, amount * comp.getShareRegister().getConsumerOwnedShare() / priceLevel);
+					}
 				} else {
 					collector.record(getDay(), comp, amount);
 				}

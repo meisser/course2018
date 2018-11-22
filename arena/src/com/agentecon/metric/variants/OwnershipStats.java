@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
@@ -23,10 +22,12 @@ import com.agentecon.util.InstantiatingHashMap;
 
 public class OwnershipStats extends SimStats {
 
+	private boolean details;
 	private Map<String, Map<String, TimeSeries>> structure;
 
-	public OwnershipStats(ISimulation agents) {
+	public OwnershipStats(ISimulation agents, boolean details) {
 		super(agents);
+		this.details = details;
 		this.structure = new InstantiatingConcurrentHashMap<String, Map<String, TimeSeries>>() {
 
 			@Override
@@ -65,7 +66,7 @@ public class OwnershipStats extends SimStats {
 						Double before = total.get(pos.getTicker());
 						double beforeValue = before == null ? 0.0 : before.doubleValue();
 						total.put(pos.getTicker(), beforeValue + pos.getAmount());
-						String ownedType = pos.getTicker().getType();
+						String ownedType = details ? pos.getTicker().getName() : pos.getTicker().getType();
 						owners.get(ownedType).include(ownerType, pos.getAmount());
 						// if (isRetiree) {
 						// owners.get(ownedType).include("Retiree", pos.getAmount());
@@ -75,7 +76,7 @@ public class OwnershipStats extends SimStats {
 			}
 			for (IFirm firm : getAgents().getFirms()) {
 				double selfOwned = firm.getShareRegister().getTotalShareCount() - firm.getShareRegister().getFreeFloatShares();
-				owners.get(firm.getType()).include("self", selfOwned);
+				owners.get(details ? firm.getTicker().getName() : firm.getType()).include("self", selfOwned);
 			}
 //			total.forEach(new BiConsumer<Ticker, Double>() {
 //

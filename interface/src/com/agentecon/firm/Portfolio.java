@@ -3,7 +3,9 @@ package com.agentecon.firm;
 import java.util.Collection;
 import java.util.HashMap;
 
+import com.agentecon.agent.IAgent;
 import com.agentecon.goods.IStock;
+import com.agentecon.market.Bid;
 import com.agentecon.production.IPriceProvider;
 import com.agentecon.production.PriceUnknownException;
 
@@ -14,16 +16,26 @@ public class Portfolio implements Cloneable {
 	private double dividends;
 	protected HashMap<Ticker, Position> inv;
 
-	@Deprecated
-	public Portfolio(IStock money) {
-		this(money, true);
-	}
-
 	public Portfolio(IStock money, boolean consumer) {
 		this.wallet = money;
 		this.inv = new HashMap<>();
 		this.dividends = 0.0;
 		this.consumer = consumer;
+	}
+	
+	public void enableLeverage(IAgent owner, IBank bank) {
+		this.wallet = bank.openCreditAccount(owner, this, wallet);
+	}
+	
+	public boolean sellAny(IAgent owner, IStockMarket market) {
+		for (Position p: inv.values()) {
+			Bid bid = market.getBid(p.getTicker());
+			if (bid != null) {
+				bid.accept(owner, wallet, p, p.getQuantity());
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void absorb(Portfolio other) {
@@ -100,6 +112,10 @@ public class Portfolio implements Cloneable {
 		return inv.size() > 0;
 	}
 
+	public double getAvailableBudget() {
+		return wallet.getAmount();
+	}
+	
 	public void collectDividends() {
 		double money = wallet.getAmount();
 		for (Position p : inv.values()) {
@@ -112,12 +128,8 @@ public class Portfolio implements Cloneable {
 		return dividends;
 	}
 
-	public double getCash() {
-		return wallet.getAmount();
-	}
-
 	public double calculateValue(IPriceProvider stats) {
-		double value = 0.0;
+		double value = wallet.getNetAmount();
 		for (IStock stock : inv.values()) {
 			try {
 				value += stats.getPriceBelief(stock.getQuantity());

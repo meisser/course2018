@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 
 import com.agentecon.agent.IAgent;
 import com.agentecon.firm.FirmFinancials;
+import com.agentecon.firm.IBank;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
@@ -13,6 +14,7 @@ import com.agentecon.goods.IStock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.Bid;
 import com.agentecon.market.IMarketListener;
+import com.agentecon.market.IMarketStatistics;
 
 public class DailyStockMarketFilter implements IStockMarket {
 
@@ -22,6 +24,11 @@ public class DailyStockMarketFilter implements IStockMarket {
 	public DailyStockMarketFilter(IStockMarket wrapped, Predicate<Ticker> typeFilter) {
 		this.wrapped = wrapped;
 		this.typeFilter = typeFilter;
+	}
+	
+	@Override
+	public IMarketStatistics getMarketStatistics() {
+		return wrapped.getMarketStatistics();
 	}
 
 	public FirmFinancials getFirmData(Ticker ticker) {
@@ -91,6 +98,11 @@ public class DailyStockMarketFilter implements IStockMarket {
 
 	public boolean hasAsk(Ticker ticker) {
 		return !typeFilter.test(ticker) && wrapped.hasAsk(ticker);
+	}
+
+	@Override
+	public IBank getLeverageProvider() {
+		return wrapped.getLeverageProvider();
 	}
 
 }

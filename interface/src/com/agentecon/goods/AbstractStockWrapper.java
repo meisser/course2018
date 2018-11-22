@@ -14,7 +14,7 @@ public abstract class AbstractStockWrapper implements IStock {
 	}
 	
 	@Override
-	public final double consume() {
+	public double consume() {
 		double amount = getAmount();
 		remove(amount);
 		return amount;
