@@ -1,6 +1,6 @@
 export default {
-  // apiURL: 'http://dedi2328.your-server.de:8080',
-  apiURL: `http://${window.location.hostname}:8080`,
+  apiURL: 'http://dedi2328.your-server.de:8080',
+  // apiURL: `http://${window.location.hostname}:8080`,
   stepSizeOptions: [1, 2, 5, 10, 100],
   miniCharts: {
     noOfChartsInSidebar: 5,
