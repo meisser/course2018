@@ -54,7 +54,7 @@ public class WealthStats extends SimStats {
 				}
 			}, a.getWealth(stats));
 		}
-		wealth.flushDay(day, true);
+		wealth.flushDay(day, false);
 	}
 
 	@Override

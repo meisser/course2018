@@ -11,4 +11,8 @@ public interface IBank extends IAgent {
 
 	public double getOutstandingCredit();
 
+	public double getInterestRate();
+	
+	public double getHaircut();
+
 }

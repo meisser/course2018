@@ -58,7 +58,8 @@ public class FundConfiguration extends HighProductivityConfiguration implements 
 		addBank();
 		addMarketMakers();
 		addInvestmentFunds(new ExerciseAgentLoader(LEV_FUND), ExerciseAgentLoader.TEAMS.size());
-		addEvent(new CentralBankEvent(POTATOE));
+//		addEvent(new CentralBankEvent(POTATOE));
+		addEvent(new WealthTaxEvent());
 	}
 
 	private void addBank() {

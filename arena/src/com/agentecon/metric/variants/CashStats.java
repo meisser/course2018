@@ -1,6 +1,8 @@
 package com.agentecon.metric.variants;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import com.agentecon.ISimulation;
 import com.agentecon.agent.IAgent;
@@ -11,11 +13,12 @@ import com.agentecon.metric.series.TimeSeriesCollector;
 
 public class CashStats extends SimStats {
 
-	private TimeSeriesCollector cash;
+	private TimeSeriesCollector totalCash, averageCash;
 
 	public CashStats(ISimulation agents, boolean individuals) {
 		super(agents);
-		this.cash = new TimeSeriesCollector(individuals, getMaxDay());
+		this.totalCash = new TimeSeriesCollector(individuals, getMaxDay());
+		this.averageCash = new TimeSeriesCollector(individuals, getMaxDay());
 	}
 
 	@Override
@@ -23,14 +26,20 @@ public class CashStats extends SimStats {
 		super.notifyDayEnded(stats);
 		int day = stats.getDay();
 		for (IAgent a : getAgents().getAgents()) {
-			cash.record(day, a, a.getMoney().getAmount());
+			double money = a.getMoney().getNetAmount();
+			totalCash.record(day, a, money);
+			averageCash.record(day, a, money);
 		}
-		cash.flushDay(day, true);
+		totalCash.flushDay(day, false);
+		averageCash.flushDay(day, true);
 	}
 
 	@Override
 	public Collection<TimeSeries> getTimeSeries() {
-		return cash.getTimeSeries();
+		ArrayList<TimeSeries> list = new ArrayList<>();
+		list.addAll(totalCash.getTimeSeries());
+		list.addAll(averageCash.getTimeSeries().stream().map(s -> s.prefix("Avg ")).collect(Collectors.toList()));
+		return list;
 	}
-
+	
 }

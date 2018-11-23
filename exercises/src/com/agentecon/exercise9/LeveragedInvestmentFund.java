@@ -27,6 +27,7 @@ public class LeveragedInvestmentFund extends Firm implements IShareholder, IMark
 
 	public LeveragedInvestmentFund(IAgentIdGenerator world, Endowment end) {
 		super(world, end);
+		this.leverageEnabled = false;
 		this.portfolio = new TradingPortfolio(getMoney().hide(RESERVE), false);
 	}
 
@@ -36,7 +37,7 @@ public class LeveragedInvestmentFund extends Firm implements IShareholder, IMark
 			getPortfolio().enableLeverage(this, dsm.getLeverageProvider());
 			leverageEnabled = true;
 		}
-		portfolio.invest(new HighestYieldPickingStrategy(), dsm, this, portfolio.getAvailableBudget() * 0.05);
+		portfolio.invest(new HighestYieldPickingStrategy(dsm.getLeverageProvider().getInterestRate()), dsm, this, portfolio.getAvailableBudget() * 0.05);
 		portfolio.sell(dsm, this, 0.005);
 	}
 

@@ -28,9 +28,11 @@ public class Creditor {
 	
 	public boolean issueMarginCalls(IStockMarket market) {
 		boolean soldShares = false;
+		boolean canSell = true;
 		IAgent agent = owner.get();
-		while (account.isLimitExceeded()) {
-			soldShares |= collateral.sellAny(agent, market);
+		while (account.isLimitExceeded() && canSell) {
+			canSell = collateral.sellAny(agent, market);
+			soldShares |= canSell;
 		}
 		return soldShares;
 	}

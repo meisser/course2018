@@ -6,14 +6,14 @@ import com.agentecon.market.Ask;
 
 public class HighestYieldPickingStrategy implements IStockPickingStrategy {
 
-	private boolean fundsOnly;
-	
+	private double minYield;
+
 	public HighestYieldPickingStrategy() {
-		this(false);
+		this(-1.0);
 	}
 
-	public HighestYieldPickingStrategy(boolean fundsOnly) {
-		this.fundsOnly = fundsOnly;
+	public HighestYieldPickingStrategy(double minYield) {
+		this.minYield = minYield;
 	}
 
 	@Override
@@ -21,20 +21,22 @@ public class HighestYieldPickingStrategy implements IStockPickingStrategy {
 		Ticker highest = null;
 		double highestYield = 0.0;
 		for (Ticker t : stocks.getTradedStocks()) {
-			if (!fundsOnly || t.isFund()) {
-				Ask ask = stocks.getAsk(t);
-				if (ask != null) {
-					double price = ask.getPrice().getPrice();
-					double dividend = stocks.getFirmData(t).getDailyDividendPerShare();
-					double yield = dividend / price;
-					if (yield > highestYield) {
-						highestYield = yield;
-						highest = t;
-					}
+			Ask ask = stocks.getAsk(t);
+			if (ask != null) {
+				double price = ask.getPrice().getPrice();
+				double dividend = stocks.getFirmData(t).getDailyDividendPerShare();
+				double yield = dividend / price;
+				if (yield > highestYield) {
+					highestYield = yield;
+					highest = t;
 				}
 			}
 		}
-		return highest;
+		if (highestYield > minYield) {
+			return highest;
+		} else {
+			return null;
+		}
 	}
 
 }

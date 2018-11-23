@@ -32,6 +32,9 @@ public class Portfolio implements Cloneable {
 			Bid bid = market.getBid(p.getTicker());
 			if (bid != null) {
 				bid.accept(owner, wallet, p, p.getQuantity());
+				if (p.isEmpty()) {
+					disposePosition(p.getTicker());
+				}
 				return true;
 			}
 		}
@@ -130,6 +133,9 @@ public class Portfolio implements Cloneable {
 
 	public double calculateValue(IPriceProvider stats) {
 		double value = wallet.getNetAmount();
+		if (value >= 0.0) {
+			value = 0.0; // no credit, positive amounts are counted in inventory
+		}
 		for (IStock stock : inv.values()) {
 			try {
 				value += stats.getPriceBelief(stock.getQuantity());

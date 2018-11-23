@@ -48,9 +48,9 @@ public enum EMetrics {
 	public String getDescription() {
 		switch (this) {
 		case CASH:
-			return "Nightly cash holdings.";
+			return "Nightly cash holdings, aggregate per type as well as average per type.";
 		case WEALTH:
-			return "Net worth at market prices. Related: cash statistics.";
+			return "Total net worth at market prices. Related: cash statistics.";
 		case DEMOGRAPHICS:
 			return "The size of the population and related figures.";
 		case DIVIDENDS:

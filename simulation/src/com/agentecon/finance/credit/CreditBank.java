@@ -14,8 +14,8 @@ import com.agentecon.market.IMarketStatistics;
 
 public class CreditBank extends Firm implements IBank {
 
-	private static final double HAIRCUT = 0.1;
-	private static final double INTEREST = 0.0001;
+	private static final double HAIRCUT = 0.5;
+	private static final double INTEREST = 0.001;
 
 	private ArrayList<Creditor> creditors;
 
@@ -66,6 +66,16 @@ public class CreditBank extends Firm implements IBank {
 			credit += c.getAccount().getCreditUsed();
 		}
 		return credit;
+	}
+
+	@Override
+	public double getInterestRate() {
+		return INTEREST;
+	}
+
+	@Override
+	public double getHaircut() {
+		return HAIRCUT;
 	}
 
 }

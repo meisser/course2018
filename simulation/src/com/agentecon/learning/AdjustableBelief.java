@@ -10,7 +10,7 @@ public abstract class AdjustableBelief implements IBelief {
 	public static final double DEFAULT_PRICE = 2.0;
 
 	public static final double MIN = 0.000001;
-	public static final double MAX = 100000;
+	public static final double MAX = 1000000;
 
 	private double price;
 

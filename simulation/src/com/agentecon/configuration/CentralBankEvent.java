@@ -34,7 +34,7 @@ public class CentralBankEvent extends SimEvent {
 		IAgents agents = sim.getAgents();
 		for (IAgent a: agents.getAgents()) {
 			IStock money = a.getMoney();
-			double interest = money.getAmount() * interestRate;
+			double interest = money.getNetAmount() * interestRate;
 			money.add(interest);
 		}		
 	}

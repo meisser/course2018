@@ -11,6 +11,7 @@ package com.agentecon.finance;
 import com.agentecon.agent.IAgent;
 import com.agentecon.firm.Position;
 import com.agentecon.goods.IStock;
+import com.agentecon.learning.AdjustableBelief;
 import com.agentecon.learning.ExpSearchBelief;
 import com.agentecon.learning.IBelief;
 import com.agentecon.market.Ask;
@@ -26,7 +27,7 @@ public class MarketMaking {
 
 	private static final double SPENDING_FRACTION = 0.2;
 
-	private static final double MAX_PRICE = 100000;
+	private static final double MAX_PRICE = AdjustableBelief.MAX;
 	
 	private IStock position;
 	private IStock wallet;
@@ -154,7 +155,7 @@ public class MarketMaking {
 
 	@Override
 	public String toString() {
-		return getBidPrice() + " to " + getAskPrice();
+		return position.getGood() + " from " + getBidPrice() + " to " + getAskPrice();
 	}
 
 }
