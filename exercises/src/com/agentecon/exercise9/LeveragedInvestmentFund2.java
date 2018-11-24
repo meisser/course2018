@@ -146,6 +146,12 @@ public class LeveragedInvestmentFund2 extends Firm implements IShareholder, IMar
 			return creditWallet;
 		}
 	}
+	
+	@Override
+	public boolean considerBankruptcy(IStatistics stats) {
+		super.considerBankruptcy(stats);
+		return getWealth(stats) <= 0.0;
+	}
 
 	@Override
 	public String toString() {
