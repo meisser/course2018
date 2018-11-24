@@ -64,26 +64,34 @@ public abstract class Firm extends Agent implements IFirm {
 		return register.raiseCapital(stockmarket, this, getDividendWallet(), valuation);
 	}
 
-	protected abstract double calculateDividends(int day);
+	protected double calculateDividends(int day) {
+		assert false;
+		return 0;
+	}
+	
+	protected double calculateDividends(IStatistics stats) {
+		return calculateDividends(stats.getDay());
+	}
 
 	public boolean considerBankruptcy(IStatistics stats) {
 		super.age();
 		return false;
 	}
-
+	
 	@Override
-	public final void payDividends(int day) {
-		double dividend = calculateDividends(day);
+	public final void payDividends(IStatistics stats) {
+		double dividend = calculateDividends(stats);
 		// pay at most 20% of the available cash
+		IStock dividendWallet = getDividendWallet();
 		if (dividend > 0) {
 //			double consumerOwned = getShareRegister().getConsumerOwnedShare();
 //			dividend /= consumerOwned;
-			dividend = Math.min(dividend, getDividendWallet().getAmount() * 0.2);
+			dividend = Math.min(dividend, dividendWallet.getAmount() * 0.2);
 		} else {
 			dividend = 0.0; // cannot pay a negative dividend
 		}
 		monitor.reportDividend(this, dividend);
-		register.payDividend(getDividendWallet(), dividend);
+		register.payDividend(dividendWallet, dividend);
 	}
 
 	public final double dispose(Inventory inv, Portfolio shares) {

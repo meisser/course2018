@@ -32,7 +32,7 @@ public class StockMarket {
 	public void trade(int day, IStatistics stats) {
 		Agents ags = country.getAgents();
 		for (IFirm firm : ags.getFirms()) {
-			firm.payDividends(day);
+			firm.payDividends(stats);
 		}
 		Collection<IMarketMaker> mms = ags.getRandomMarketMakers();
 		runDailyMarket(day, ags, mms, stats);

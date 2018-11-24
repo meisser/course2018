@@ -14,10 +14,6 @@ public class Ticker extends Good {
 		this.number = number;
 	}
 	
-	public boolean isFund() {
-		return type.contains("Fund");
-	}
-	
 	public int getNumer() {
 		return number;
 	}

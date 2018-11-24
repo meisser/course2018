@@ -9,6 +9,8 @@ import com.agentecon.firm.Portfolio;
 import com.agentecon.firm.Position;
 import com.agentecon.firm.Ticker;
 import com.agentecon.goods.IStock;
+import com.agentecon.goods.Quantity;
+import com.agentecon.market.Bid;
 import com.agentecon.production.IPriceProvider;
 import com.agentecon.production.PriceUnknownException;
 import com.agentecon.util.Numbers;
@@ -35,6 +37,16 @@ public class TradingPortfolio extends Portfolio {
 		return value;
 	}
 
+	public double sell(Ticker ticker, IStockMarket stocks, IAgent owner, double fraction) {
+		double moneyBefore = wallet.getAmount();
+		Position pos = inv.get(ticker);
+		stocks.sell(owner, pos, getWallet(), pos.getAmount() * fraction);
+		if (pos.isEmpty()) {
+			disposePosition(ticker);
+		}
+		return wallet.getAmount() - moneyBefore;
+	}
+
 	public double sell(IStockMarket stocks, IAgent owner, double fraction) {
 		double moneyBefore = wallet.getAmount();
 		double sharesToSell = 0.0;
@@ -49,32 +61,64 @@ public class TradingPortfolio extends Portfolio {
 		}
 		return wallet.getAmount() - moneyBefore;
 	}
-	
+
+	public double divest(IStockPickingStrategy strategy, IStockMarket stocks, IAgent owner, double targetProceeds) {
+		double moneyBefore = wallet.getAmount();
+		double proceeds = wallet.getAmount() - moneyBefore;
+		while (Numbers.isBigger(targetProceeds, proceeds)) {
+			Ticker any = strategy.findStockToSell(getPositionTickers(), stocks);
+			Position pos = any == null ? null : getPosition(any);
+			if (pos == null) {
+				break;
+			} else if (pos.isEmpty()){
+				disposePosition(any);
+			} else {
+				Bid bid = stocks.getBid(any);
+				if (bid == null) {
+					break;
+				} else {
+					double sharesToSell = targetProceeds / bid.getPrice().getPrice();
+					bid.accept(owner, wallet, pos, new Quantity(any, sharesToSell));
+					proceeds = wallet.getAmount() - moneyBefore;
+					if (pos.isEmpty()) {
+						disposePosition(any);
+					}
+				}
+			}
+		}
+		return proceeds;
+	}
+
 	/**
-	 * Invest according to the default strategy, weighting the chances of 
-	 * choosing a stock by its market capitalization.
-	 * This is similar to what an Index-ETF does.
+	 * Invest according to the default strategy, weighting the chances of choosing a stock by its market capitalization. This is similar to what an Index-ETF does.
 	 */
 	public double invest(IStockMarket stocks, IAgent owner, double budget) {
 		return invest(new IStockPickingStrategy() {
-			
+
 			@Override
 			public Ticker findStockToBuy(IStockMarket stocks) {
 				return stocks.getRandomStock(true);
 			}
 		}, stocks, owner, budget);
 	}
-	
+
+	/**
+	 * Same as "invest", but with a less sophisticated name.
+	 */
+	public double buy(Ticker t, IStockMarket dsm, IAgent owner, double budget) {
+		return invest(t, dsm, owner, budget);
+	}
+
 	public double invest(Ticker t, IStockMarket dsm, IAgent owner, double budget) {
 		return invest(new IStockPickingStrategy() {
-			
+
 			@Override
 			public Ticker findStockToBuy(IStockMarket stocks) {
 				return t;
 			}
 		}, dsm, owner, budget);
 	}
-	
+
 	public double invest(IStockPickingStrategy strategy, IStockMarket stocks, IAgent owner, double budget) {
 		double moneyBefore = wallet.getAmount();
 		budget = Math.min(moneyBefore, budget);

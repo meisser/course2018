@@ -27,6 +27,10 @@ public class Portfolio implements Cloneable {
 		this.wallet = bank.openCreditAccount(owner, this, wallet);
 	}
 	
+	public IStock getWallet() {
+		return wallet;
+	}
+	
 	public boolean sellAny(IAgent owner, IStockMarket market) {
 		for (Position p: inv.values()) {
 			Bid bid = market.getBid(p.getTicker());
