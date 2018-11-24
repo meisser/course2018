@@ -97,6 +97,21 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	public Iterable<IProducer> getProducers() {
 		return producers.stream().filter(t -> t instanceof IProducer).map(t -> (IProducer) t)::iterator;
 	}
+	
+	public double calculateMoneySupply() {
+		double money = 0.0;
+		for (IAgent agent: all.values()) {
+			money += agent.getMoney().getNetAmount();
+		}
+		double credit = 0.0;
+		for (IBank bank: getBanks()) {
+			credit += bank.getOutstandingCredit();
+		}
+		for (Inheritance inh: pendingInheritances) {
+			money += inh.getMoney().getNetAmount();
+		}
+		return money - credit;
+	}
 
 	public Collection<IConsumer> getConsumers() {
 		return consumers;
@@ -214,6 +229,7 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	private void distribute(Inheritance inheritance) {
 		if (SINGLE_HEIR_MODE) {
 			this.pendingInheritances.add(inheritance);
+			this.shareholders.add(inheritance);
 		} else {
 			double sharePerConsumer = 1.0 / consumers.size();
 			for (IConsumer consumer : consumers) {

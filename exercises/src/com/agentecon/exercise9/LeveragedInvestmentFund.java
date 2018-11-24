@@ -17,6 +17,7 @@ import com.agentecon.firm.Ticker;
 import com.agentecon.goods.IStock;
 import com.agentecon.market.Ask;
 import com.agentecon.market.IPriceTakerMarket;
+import com.agentecon.market.IStatistics;
 
 public class LeveragedInvestmentFund extends Firm implements IShareholder, IMarketParticipant {
 
@@ -81,6 +82,12 @@ public class LeveragedInvestmentFund extends Firm implements IShareholder, IMark
 		// In case one of the farms we have invested in went bankrupt, we might have ended up
 		// with some land in our inventory. In that case, let's try to sell it on the goods market.
 		market.sellSome(this, getMoney(), getInventory().getStock(CapitalConfiguration.LAND));
+	}
+	
+	@Override
+	public boolean considerBankruptcy(IStatistics stats) {
+		super.considerBankruptcy(stats);
+		return getWealth(stats) <= 0.0;
 	}
 
 	@Override

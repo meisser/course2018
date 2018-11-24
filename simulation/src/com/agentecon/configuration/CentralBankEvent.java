@@ -22,8 +22,8 @@ public class CentralBankEvent extends SimEvent {
 	public void execute(int day, ICountry sim, IStatistics stats) {
 		try {
 			double price = stats.getGoodsMarketStats().getPriceBelief(indexGood);
-			if (price < 5.0) {
-				payInterest(sim, 0.0015);
+			if (price < 1.0) {
+				payInterest(sim, 0.0005);
 			}
 		} catch (PriceUnknownException e) {
 		}

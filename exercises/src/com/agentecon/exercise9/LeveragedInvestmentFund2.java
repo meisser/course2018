@@ -74,7 +74,18 @@ public class LeveragedInvestmentFund2 extends Firm implements IShareholder, IMar
 				// In this case, market statistics could not return a valid price. Do nothing.
 			}
 		 }
+		 
+		 double interestRate = dsm.getLeverageProvider().getInterestRate();
+		 double haircut = dsm.getLeverageProvider().getHaircut();
+		 double collateralRate = 1.0 - haircut; // when your shares have a value of 1000, you can borrow up collateralRate*1000
+		 double maxLeverage = 1.0 / haircut; // e.g. with a haircut of 20%, one can reach up to 5-fold leverage over time
 
+		 int day = getAge() + 1000; // calculate the day given that we got founded on day 1000
+		 
+		 // Print out a tab-separated table of day and portfolio value that can be copied from the console into excel
+		 // Please do not upload print statements to the server. The intended way to run this is by running the Simulation
+		 // class directly, and not the SimulationServer.
+		 System.out.println(day + "\t" + portfolio.calculateValue(dsm.getMarketStatistics()));
 	}
 
 	/**

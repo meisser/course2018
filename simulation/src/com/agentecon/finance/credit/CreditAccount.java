@@ -46,7 +46,11 @@ public class CreditAccount extends AbstractStockWrapper {
 
 	@Override
 	public double consume() {
-		throw new RuntimeException("Not implemented");
+		if (getNetAmount() > 0.0) {
+			return super.consume();
+		} else {
+			return 0.0;
+		}
 	}
 
 	@Override

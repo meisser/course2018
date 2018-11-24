@@ -34,14 +34,14 @@ public class StockMarket {
 		for (IFirm firm : ags.getFirms()) {
 			firm.payDividends(stats);
 		}
+		for (IShareholder shareholder : ags.getShareholders()) {
+			shareholder.getPortfolio().collectDividends();
+		}
 		Collection<IMarketMaker> mms = ags.getRandomMarketMakers();
 		runDailyMarket(day, ags, mms, stats);
 	}
 
 	protected void runDailyMarket(int day, Agents ags, Collection<IMarketMaker> mms, IStatistics stats) {
-		for (IShareholder shareholder : ags.getShareholders()) {
-			shareholder.getPortfolio().collectDividends();
-		}
 		FinancialMarketData financials = new FinancialMarketData(ags, stats);
 		IBank bank = ags.getBank();
 		DailyStockMarket dsm = new DailyStockMarket(financials, bank, country.getRand());

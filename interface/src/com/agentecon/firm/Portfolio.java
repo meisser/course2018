@@ -130,7 +130,7 @@ public class Portfolio implements Cloneable {
 		}
 		this.dividends = wallet.getAmount() - money;
 	}
-
+	
 	public double getLatestDividendIncome() {
 		return dividends;
 	}

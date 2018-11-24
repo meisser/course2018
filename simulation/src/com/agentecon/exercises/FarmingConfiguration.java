@@ -67,7 +67,7 @@ public class FarmingConfiguration extends SimulationConfig implements IInnovatio
 
 	public FarmingConfiguration(IAgentFactory factory, int agents) {
 		super(ROUNDS);
-		IStock[] initialEndowment = new IStock[] { new Stock(LAND, LAND_ENDOWMENT), new Stock(getMoney(), 1000) };
+		IStock[] initialEndowment = new IStock[] { new Stock(LAND, LAND_ENDOWMENT), new Stock(getMoney(), 10000) };
 		IStock[] dailyEndowment = new IStock[] { new Stock(MAN_HOUR, HermitConfiguration.DAILY_ENDOWMENT) };
 		Endowment end = new Endowment(getMoney(), initialEndowment, dailyEndowment);
 		addEvent(new ConsumerEvent(agents, end, this) {

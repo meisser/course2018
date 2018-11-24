@@ -1,6 +1,7 @@
 package com.agentecon.finance.credit;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.agentecon.agent.Endowment;
 import com.agentecon.agent.IAgent;
@@ -14,13 +15,15 @@ import com.agentecon.market.IMarketStatistics;
 
 public class CreditBank extends Firm implements IBank {
 
-	private static final double HAIRCUT = 0.5;
+	private static final double HAIRCUT = 0.2;
 	private static final double INTEREST = 0.001;
 
+	private double creditLoss;
 	private ArrayList<Creditor> creditors;
 
 	public CreditBank(IAgentIdGenerator gen, Endowment end) {
 		super(gen, end);
+		this.creditLoss = 0.0;
 		this.creditors = new ArrayList<>();
 	}
 
@@ -34,8 +37,15 @@ public class CreditBank extends Firm implements IBank {
 	}
 
 	private void updateCreditLines(IMarketStatistics stats) {
-		for (Creditor account : creditors) {
-			account.chargeInterestAndUpdateCreditLimit(getMoney(), stats, HAIRCUT, INTEREST);
+		Iterator<Creditor> iter = creditors.iterator();
+		while (iter.hasNext()) {
+			try {
+				Creditor account = iter.next();
+				account.chargeInterestAndUpdateCreditLimit(getMoney(), stats, HAIRCUT, INTEREST);
+			} catch (CreditorBankruptException e) {
+				this.creditLoss += e.getLostMoney();
+				iter.remove();
+			}
 		}
 	}
 
@@ -56,13 +66,21 @@ public class CreditBank extends Firm implements IBank {
 
 	@Override
 	protected double calculateDividends(int day) {
+		if (creditLoss > getMoney().getAmount()) {
+			creditLoss -= getMoney().getAmount();
+			getMoney().consume();
+		} else if (creditLoss == 0) {
+		} else if (creditLoss < getMoney().getAmount()){
+			getMoney().remove(creditLoss);
+			creditLoss = 0.0;
+		}
 		return getMoney().getAmount() / 10;
 	}
 
 	@Override
 	public double getOutstandingCredit() {
 		double credit = 0;
-		for (Creditor c: creditors) {
+		for (Creditor c : creditors) {
 			credit += c.getAccount().getCreditUsed();
 		}
 		return credit;
