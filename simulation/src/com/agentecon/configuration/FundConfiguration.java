@@ -1,6 +1,7 @@
 package com.agentecon.configuration;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
 
 import com.agentecon.IAgentFactory;
@@ -21,6 +22,7 @@ import com.agentecon.finance.credit.CreditBank;
 import com.agentecon.firm.IBank;
 import com.agentecon.goods.IStock;
 import com.agentecon.goods.Stock;
+import com.agentecon.market.IStatistics;
 import com.agentecon.research.IInnovation;
 import com.agentecon.world.ICountry;
 
@@ -57,7 +59,21 @@ public class FundConfiguration extends HighProductivityConfiguration implements 
 		createBasicPopulation(workerEndowment);
 		addBank();
 		addMarketMakers();
-		addInvestmentFunds(new ExerciseAgentLoader(LEV_FUND), ExerciseAgentLoader.TEAMS.size());
+		addInvestmentFunds(new ExerciseAgentLoader(LEV_FUND) {
+			
+			@Override
+			protected void check(Class<?> clazz) throws InvalidAgentException {
+				try {
+					Method m = clazz.getDeclaredMethod("considerBankruptcy", IStatistics.class);
+					assert m != null;
+				} catch (NoSuchMethodException e) {
+					throw new InvalidAgentException("Agent must have considerBankruptcy method", e);
+				} catch (SecurityException e) {
+					throw new InvalidAgentException("Agent must have considerBankruptcy method", e);
+				}
+			}
+			
+		}, ExerciseAgentLoader.TEAMS.size());
 		addEvent(new CentralBankEvent(POTATOE));
 		addEvent(new WealthTaxEvent());
 	}

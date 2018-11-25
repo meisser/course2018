@@ -24,31 +24,32 @@ import com.agentecon.production.IProductionFunction;
 public class AgentFactoryMultiplex implements IAgentFactory {
 
 	private int current;
-	private boolean keepDefault;
 	private IAgentFactory defaultFactory;
 	private ArrayList<IAgentFactory> factories;
-	
-	public AgentFactoryMultiplex(IAgentFactory defaultFactory, boolean keepDefault) {
+
+	public AgentFactoryMultiplex(IAgentFactory defaultFactory) {
 		assert defaultFactory != null;
 		this.defaultFactory = defaultFactory;
-		this.keepDefault = keepDefault;
 		this.current = 0;
 		this.factories = new ArrayList<>();
-		this.factories.add(defaultFactory);
+	}
+
+	protected IAgentFactory getDefaultFactory() {
+		return defaultFactory;
 	}
 
 	public AgentFactoryMultiplex(Class<? extends IConsumer>[] agents) {
 		this(new IAgentFactory() {
-				
-				@Override
-				public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
-					return new Consumer(id, endowment, utilityFunction);
-				}
-			}, false);
+
+			@Override
+			public IConsumer createConsumer(IAgentIdGenerator id, Endowment endowment, IUtility utilityFunction) {
+				return new Consumer(id, endowment, utilityFunction);
+			}
+		});
 		for (int i = 0; i < agents.length; i++) {
 			final Class<? extends IConsumer> current = agents[i];
 			addFactory(new IAgentFactory() {
-				
+
 				@Override
 				public IConsumer createConsumer(IAgentIdGenerator id, int maxAge, Endowment endowment, IUtility utilityFunction) {
 					try {
@@ -74,22 +75,17 @@ public class AgentFactoryMultiplex implements IAgentFactory {
 	}
 
 	protected void addFactory(IAgentFactory factory) {
-		assert factory != defaultFactory;
-		if (!keepDefault && factories.size() == 1 && factories.get(0) == defaultFactory) {
-			factories.set(0, factory);
-		} else {
-			factories.add(factory);
-		}
+		factories.add(factory);
 	}
 
 	private IAgentFactory getCurrent() {
-		return factories.get(current++ % factories.size());
+		if (factories.isEmpty()) {
+			return getDefaultFactory();
+		} else {
+			return factories.get(current++ % factories.size());
+		}
 	}
-	
-	private IAgentFactory getDefaultFactory() {
-		 return defaultFactory;
-	}
-	
+
 	@Override
 	public IConsumer createConsumer(IAgentIdGenerator id, int maxAge, Endowment endowment, IUtility utilityFunction) {
 		IAgentFactory current = getCurrent();
@@ -103,19 +99,19 @@ public class AgentFactoryMultiplex implements IAgentFactory {
 		IConsumer consumer = current.createConsumer(id, endowment, utilityFunction);
 		return consumer == null ? getDefaultFactory().createConsumer(id, endowment, utilityFunction) : consumer;
 	}
-	
+
 	@Override
 	public IFirm createFirm(IAgentIdGenerator id, Endowment end) {
 		IAgentFactory current = getCurrent();
 		IFirm firm = current.createFirm(id, end);
 		return firm == null ? getDefaultFactory().createFirm(id, end) : firm;
 	}
-	
+
 	@Override
 	public IFirm createFirm(IAgentIdGenerator id, Endowment end, IProductionFunction prodFun) {
 		IAgentFactory current = getCurrent();
 		IFirm firm = current.createFirm(id, end, prodFun);
 		return firm == null ? getDefaultFactory().createFirm(id, end, prodFun) : firm;
 	}
-	
+
 }

@@ -12,12 +12,18 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.agentecon.IAgentFactory;
+import com.agentecon.agent.IAgentIdGenerator;
 import com.agentecon.classloader.GitSimulationHandle;
 import com.agentecon.configuration.AgentFactoryMultiplex;
+import com.agentecon.configuration.FundConfiguration;
+import com.agentecon.configuration.InvalidAgentException;
+import com.agentecon.goods.Good;
+import com.agentecon.goods.Stock;
 import com.agentecon.sim.SimulationConfig;
 
 public class ExerciseAgentLoader extends AgentFactoryMultiplex {
@@ -31,7 +37,7 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 	}
 
 	public ExerciseAgentLoader(String classname, boolean remoteTeams) throws SocketTimeoutException, IOException {
-		super(remoteTeams ? new ExerciseAgentFactory(classname, "meisser", DEFAULT_REPO) : new ExerciseAgentFactory(classname), false);
+		super(remoteTeams ? new ExerciseAgentFactory(classname, "meisser", DEFAULT_REPO) : new ExerciseAgentFactory(classname));
 		if (remoteTeams) {
 			addFactories(classname, remoteTeams);
 		}
@@ -47,7 +53,7 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 	}
 
 	private void addFactories(String classname, boolean remoteTeams) throws SocketTimeoutException, IOException {
-		Stream<ExerciseAgentFactory> stream = TEAMS.parallelStream().map(team -> {
+		Stream<IAgentFactory> stream = TEAMS.parallelStream().map(team -> {
 			return createFactory(classname, team);
 		}).filter(factory -> factory != null);
 		for (IAgentFactory factory : stream.collect(Collectors.toList())) {
@@ -55,19 +61,49 @@ public class ExerciseAgentLoader extends AgentFactoryMultiplex {
 		}
 	}
 
-	protected static ExerciseAgentFactory createFactory(String classname, String team) {
+	protected IAgentFactory createFactory(String classname, String team) {
 		try {
 			ExerciseAgentFactory factory = new ExerciseAgentFactory(classname, new GitSimulationHandle("meisser", team, false));
 			try {
-				factory.preload();
+				Class<?> clazz = factory.preload();
+				check(clazz);
 				return factory;
-			} catch (ClassNotFoundException e) {
+			} catch (ClassNotFoundException | InvalidAgentException e) {
 				System.err.println("Could not load agent from " + factory + " due to " + e);
-				return null;
+				System.err.println("Falling back to default factory for team " + team);
+				return getDefaultFactory();
 			}
 		} catch (IOException e) {
-			return null;
+			System.err.println("Could not load agent factory for team " + team + ", falling back to default factory. Reason: " + e);
+			return getDefaultFactory();
 		}
+	}
+	
+	protected void check(Class<?> clazz) throws InvalidAgentException {
+	}
+
+	public static void main(String[] args) throws SocketTimeoutException, IOException {
+		ExerciseAgentLoader loader = new ExerciseAgentLoader(FundConfiguration.LEV_FUND, true);
+		IAgentIdGenerator id = new IAgentIdGenerator() {
+			@Override
+			public int previewNextId() {
+				return 1;
+			}
+			
+			@Override
+			public int createUniqueAgentId() {
+				return 1;
+			}
+
+			@Override
+			public Random getRand() {
+				return new Random();
+			}
+		};
+		for (int i=0; i<6; i++) {
+			loader.createFirm(id, new Stock(new Good("Taler")));
+		}
+		
 	}
 
 }

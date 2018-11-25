@@ -49,8 +49,8 @@ public class ExerciseAgentFactory implements IAgentFactory {
 		return loader instanceof RemoteLoader ? (RemoteLoader) loader : null;
 	}
 
-	public void preload() throws ClassNotFoundException {
-		loader.loadClass(classname);
+	public Class<?> preload() throws ClassNotFoundException {
+		return loader.loadClass(classname);
 	}
 	
 	@Override
