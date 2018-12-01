@@ -27,7 +27,7 @@ import com.agentecon.web.methods.WebApiMethod;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 
-public class \ extends VisServer {
+public class SimulationServer extends VisServer {
 
 	private MethodsMethod methods;
 	private ListMethod simulations;
