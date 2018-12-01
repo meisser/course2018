@@ -27,7 +27,7 @@ import com.agentecon.web.methods.WebApiMethod;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 
-public class SimulationServer extends VisServer {
+public class \ extends VisServer {
 
 	private MethodsMethod methods;
 	private ListMethod simulations;
@@ -53,7 +53,7 @@ public class SimulationServer extends VisServer {
 				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex5-stocks-discount099-1", true));
 				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex6-flow-1", true));
 				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex7-equality-1", true));
-				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex9-fund-5", true));
+				this.simulations.add(new GitSimulationHandle("meisser", "course2018", "ex9-fund-6", true));
 			} catch (IOException e) {
 				System.out.println("Disabled remote repositories. " + e.getMessage());
 			}
