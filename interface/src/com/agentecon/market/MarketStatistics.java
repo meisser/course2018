@@ -146,4 +146,9 @@ public class MarketStatistics implements IMarketStatistics, IMarketListener {
 		return index.getAverage();
 	}
 
+	@Override
+	public double getLatestPrice(Ticker ticker) {
+		return getStats(ticker).getYesterday().getAverage();
+	}
+
 }

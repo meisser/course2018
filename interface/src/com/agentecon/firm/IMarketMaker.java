@@ -8,7 +8,6 @@
  */
 package com.agentecon.firm;
 
-import com.agentecon.goods.Good;
 import com.agentecon.market.IPriceMakerMarket;
 
 public interface IMarketMaker extends IShareholder, IFirm {
@@ -24,14 +23,4 @@ public interface IMarketMaker extends IShareholder, IFirm {
 	 */
 	public void notifyFirmCreated(IFirm firm);
 	
-	public double getPrice(Good ticker);
-	
-	public default double getBid(Ticker ticker) {
-		return getPrice(ticker);
-	}
-	
-	public default double getAsk(Ticker ticker) {
-		return getPrice(ticker);
-	}
-
 }

@@ -9,6 +9,10 @@ import com.agentecon.market.Bid;
 import com.agentecon.market.Price;
 
 public class BidFin extends Bid {
+	
+	public BidFin(IAgent owner, IStock wallet, Position stock, double price, double amount) {
+		super(owner, wallet, stock, new Price(stock.getTicker(), price), amount);
+	}
 
 	public BidFin(IAgent owner, IStock wallet, Position stock, Price price, double amount) {
 		super(owner, wallet, stock, price, amount);

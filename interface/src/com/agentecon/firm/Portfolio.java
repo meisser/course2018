@@ -14,6 +14,7 @@ public class Portfolio implements Cloneable {
 	private boolean consumer;
 	protected IStock wallet;
 	private double dividends;
+	private boolean keepEmptyPositions;
 	protected HashMap<Ticker, Position> inv;
 
 	public Portfolio(IStock money, boolean consumer) {
@@ -21,18 +22,26 @@ public class Portfolio implements Cloneable {
 		this.inv = new HashMap<>();
 		this.dividends = 0.0;
 		this.consumer = consumer;
+		this.keepEmptyPositions = false;
 	}
-	
+
+	/**
+	 * Make the simulation slower as empty positions are not removed. This can be useful when posting limit orders for new stocks.
+	 */
+	public void setKeepEmptyPositions() {
+		this.keepEmptyPositions = true;
+	}
+
 	public void enableLeverage(IAgent owner, IBank bank) {
 		this.wallet = bank.openCreditAccount(owner, this, wallet);
 	}
-	
+
 	public IStock getWallet() {
 		return wallet;
 	}
-	
+
 	public boolean sellAny(IAgent owner, IStockMarket market) {
-		for (Position p: inv.values()) {
+		for (Position p : inv.values()) {
 			Bid bid = market.getBid(p.getTicker());
 			if (bid != null) {
 				bid.accept(owner, wallet, p, p.getQuantity());
@@ -77,8 +86,8 @@ public class Portfolio implements Cloneable {
 			}
 		}
 	}
-	
-	public Collection<Ticker> getPositionTickers(){
+
+	public Collection<Ticker> getPositionTickers() {
 		return inv.keySet();
 	}
 
@@ -102,9 +111,11 @@ public class Portfolio implements Cloneable {
 	}
 
 	public void disposePosition(Ticker t) {
-		Position p = inv.remove(t);
-		if (p != null) {
-			p.dispose();
+		if (!keepEmptyPositions) {
+			Position p = inv.remove(t);
+			if (p != null) {
+				p.dispose();
+			}
 		}
 	}
 
@@ -122,7 +133,7 @@ public class Portfolio implements Cloneable {
 	public double getAvailableBudget() {
 		return wallet.getAmount();
 	}
-	
+
 	public void collectDividends() {
 		double money = wallet.getAmount();
 		for (Position p : inv.values()) {
@@ -130,7 +141,7 @@ public class Portfolio implements Cloneable {
 		}
 		this.dividends = wallet.getAmount() - money;
 	}
-	
+
 	public double getLatestDividendIncome() {
 		return dividends;
 	}

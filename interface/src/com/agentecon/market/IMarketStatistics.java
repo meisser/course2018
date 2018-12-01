@@ -20,5 +20,7 @@ public interface IMarketStatistics extends IPriceProvider {
 	public void print(PrintStream out);
 
 	public double getPriceIndex();
+
+	public double getLatestPrice(Ticker ticker);
 	
 }

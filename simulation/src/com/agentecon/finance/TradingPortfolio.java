@@ -3,6 +3,7 @@ package com.agentecon.finance;
 import java.util.ArrayList;
 
 import com.agentecon.agent.IAgent;
+import com.agentecon.finance.credit.CreditAccount;
 import com.agentecon.finance.stockpicking.IStockPickingStrategy;
 import com.agentecon.firm.IStockMarket;
 import com.agentecon.firm.Portfolio;
@@ -19,6 +20,14 @@ public class TradingPortfolio extends Portfolio {
 
 	public TradingPortfolio(IStock money, boolean consumer) {
 		super(money, consumer);
+	}
+	
+	public double getCreditUsed() {
+		if (wallet instanceof CreditAccount) {
+			return ((CreditAccount)wallet).getCreditUsed();
+		} else {
+			return 0.0;
+		}
 	}
 
 	public double getCombinedValue(IPriceProvider prices, int timeHorizon) throws PriceUnknownException {

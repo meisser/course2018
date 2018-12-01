@@ -11,14 +11,9 @@ public class FirmFinancials {
 	
 	private IStatistics general;
 	
-	@Deprecated
-	public FirmFinancials(IFirm firm, GoodStats stats) {
-		this.firm = firm;
-		this.stats = stats;
-	}
-
 	public FirmFinancials(IFirm firm, IStatistics stats) {
-		this(firm, stats.getStockMarketStats().getStats(firm.getTicker()));
+		this.firm = firm;
+		this.stats = stats.getStockMarketStats().getStats(firm.getTicker());
 		this.general = stats;
 	}
 	

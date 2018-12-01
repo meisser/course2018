@@ -81,7 +81,7 @@ public class StocksConfiguration extends FarmingConfiguration implements IUtilit
 			public void execute(int day, ICountry sim) {
 				for (int i = 0; i < getCardinality(); i++) {
 					IStock money = new Stock(getMoney(), 1000);
-					sim.add(new MarketMaker(sim, money, sim.getAgents().getFirms()));
+					sim.add(new MarketMaker(sim, money));
 				}
 			}
 		});

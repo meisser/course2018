@@ -97,17 +97,17 @@ public class Agents implements IAgents, IAgentIdGenerator {
 	public Iterable<IProducer> getProducers() {
 		return producers.stream().filter(t -> t instanceof IProducer).map(t -> (IProducer) t)::iterator;
 	}
-	
+
 	public double calculateMoneySupply() {
 		double money = 0.0;
-		for (IAgent agent: all.values()) {
+		for (IAgent agent : all.values()) {
 			money += agent.getMoney().getNetAmount();
 		}
 		double credit = 0.0;
-		for (IBank bank: getBanks()) {
+		for (IBank bank : getBanks()) {
 			credit += bank.getOutstandingCredit();
 		}
-		for (Inheritance inh: pendingInheritances) {
+		for (Inheritance inh : pendingInheritances) {
 			money += inh.getMoney().getNetAmount();
 		}
 		return money - credit;
@@ -151,6 +151,14 @@ public class Agents implements IAgents, IAgentIdGenerator {
 			shareholders.add((IShareholder) agent);
 		}
 		if (agent instanceof IMarketMaker) {
+			if (newAgent) {
+				IMarketMaker mm = (IMarketMaker) agent;
+				for (IFirm firm : firms.values()) {
+					if (firm != mm) {
+						mm.notifyFirmCreated(firm);
+					}
+				}
+			}
 			marketMakers.add((IMarketMaker) agent);
 		}
 		if (agent instanceof IGoodsTrader) {

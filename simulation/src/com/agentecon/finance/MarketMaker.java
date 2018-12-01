@@ -1,6 +1,5 @@
 package com.agentecon.finance;
 
-import java.util.Collection;
 import java.util.HashMap;
 
 import com.agentecon.agent.Endowment;
@@ -26,13 +25,10 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 	private Portfolio portfolio;
 	private HashMap<Ticker, MarketMaking> priceBeliefs;
 
-	public MarketMaker(IAgentIdGenerator id, IStock money, Collection<IFirm> firms) {
+	public MarketMaker(IAgentIdGenerator id, IStock money) {
 		super(id, new Endowment(money));
 		this.portfolio = new Portfolio(getMoney(), false);
 		this.priceBeliefs = new HashMap<Ticker, MarketMaking>();
-		for (IFirm firm : firms) {
-			notifyFirmCreated(firm);
-		}
 	}
 
 	@Override
@@ -86,12 +82,10 @@ public class MarketMaker extends Firm implements IMarketMaker, IPriceProvider, I
 		return priceBeliefs.get(output).getPrice();
 	}
 
-	@Override
 	public double getBid(Ticker ticker) {
 		return priceBeliefs.get(ticker).getBidPrice();
 	}
 
-	@Override
 	public double getAsk(Ticker ticker) {
 		return priceBeliefs.get(ticker).getAskPrice();
 	}

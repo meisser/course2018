@@ -96,7 +96,7 @@ public class FundConfiguration extends HighProductivityConfiguration implements 
 			public void execute(int day, ICountry sim) {
 				for (int i = 0; i < getCardinality(); i++) {
 					IStock money = new Stock(getMoney(), START_CAPITAL);
-					sim.add(new MarketMaker(sim, money, sim.getAgents().getFirms()));
+					sim.add(new MarketMaker(sim, money));
 				}
 			}
 		});

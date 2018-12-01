@@ -11,6 +11,10 @@ import com.agentecon.market.Price;
 
 public class AskFin extends Ask {
 
+	public AskFin(IAgent owner, IStock wallet, Position stock, double price, double amount) {
+		super(owner, wallet, stock, new Price(stock.getTicker(), price), amount);
+	}
+	
 	public AskFin(IAgent owner, IStock wallet, Position stock, Price price, double amount) {
 		super(owner, wallet, stock, price, amount);
 	}
