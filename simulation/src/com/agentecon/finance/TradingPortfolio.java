@@ -29,6 +29,15 @@ public class TradingPortfolio extends Portfolio {
 			return 0.0;
 		}
 	}
+	
+	public double getLeverageRatio(double haircut) {
+		double creditUsed = getCreditUsed();
+		double moneyAvailable = getAvailableBudget();
+		double totalAvailableCredit = creditUsed + moneyAvailable;
+		double portfolioValueAccordingToBankCalculation = totalAvailableCredit / (1.0 - haircut);
+		double ownCapital = portfolioValueAccordingToBankCalculation - creditUsed;
+		return portfolioValueAccordingToBankCalculation / ownCapital;
+	}
 
 	public double getCombinedValue(IPriceProvider prices, int timeHorizon) throws PriceUnknownException {
 		return getSubstanceValue(prices) + getEarningsValue(timeHorizon);
