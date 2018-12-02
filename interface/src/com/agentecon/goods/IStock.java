@@ -48,8 +48,8 @@ public interface IStock {
 			this.remove(-amount);
 			source.add(-amount);
 		}
-		assert source.getNetAmount() < 1000000000 : "Unreasonably high value of " + getGood() + " accumulated. Is too much money being printed?";
-		assert getNetAmount() < 1000000000;
+		assert source.getNetAmount() < 10000000000d : "Unreasonably high value of " + getGood() + " accumulated. Is too much money being printed?";
+		assert getNetAmount() < 10000000000d;
 	}
 
 	/**

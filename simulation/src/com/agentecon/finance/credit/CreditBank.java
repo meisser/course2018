@@ -16,7 +16,7 @@ import com.agentecon.market.IMarketStatistics;
 public class CreditBank extends Firm implements IBank {
 
 	private static final double HAIRCUT = 0.2;
-	private static final double INTEREST = 0.001;
+	private static final double INTEREST = 0.0001;
 
 	private double creditLoss;
 	private ArrayList<Creditor> creditors;

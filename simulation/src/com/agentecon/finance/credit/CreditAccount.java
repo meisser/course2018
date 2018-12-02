@@ -5,6 +5,8 @@ import com.agentecon.goods.IStock;
 import com.agentecon.util.Numbers;
 
 public class CreditAccount extends AbstractStockWrapper {
+	
+	public static final double MAX_CREDIT = 1000000000;
 
 	private double creditUsed;
 	private double creditLimit;
@@ -18,7 +20,7 @@ public class CreditAccount extends AbstractStockWrapper {
 	}
 
 	public void setCreditLimit(double newLimit) {
-		this.creditLimit = newLimit;
+		this.creditLimit = Math.min(MAX_CREDIT, newLimit);
 	}
 
 	public boolean isLimitExceeded() {
