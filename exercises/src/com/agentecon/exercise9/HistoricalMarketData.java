@@ -22,14 +22,16 @@ public class HistoricalMarketData {
 	}
 
 	public void update(IStockMarket market) {
-		for (Ticker ticker: market.getTradedStocks()) {
+		for (Ticker ticker : market.getTradedStocks()) {
 			double value = market.getMarketStatistics().getLatestPrice(ticker);
-			HistoricalStockData data = trackedStocks.get(ticker);
-			if (data == null) {
-				data = new HistoricalStockData();
-				trackedStocks.put(ticker, data);
+			if (Double.isFinite(value)) {
+				HistoricalStockData data = trackedStocks.get(ticker);
+				if (data == null) {
+					data = new HistoricalStockData();
+					trackedStocks.put(ticker, data);
+				}
+				data.update(value);
 			}
-			data.update(value);
 		}
 	}
 
