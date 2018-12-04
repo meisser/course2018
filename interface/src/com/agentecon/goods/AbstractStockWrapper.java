@@ -22,7 +22,6 @@ public abstract class AbstractStockWrapper implements IStock {
 	
 	@Override
 	public void remove(double quantity) {
-		assert quantity <= getAmount();
 		assert quantity >= 0;
 		wrapped.remove(quantity);
 	}

@@ -67,7 +67,7 @@ public class Stock implements IStock {
 	@Override
 	public void remove(double quantity) {
 		assert quantity >= 0.0;
-		assert Math.abs(quantity - amount) >= -Numbers.EPSILON;
+//		assert Math.abs(quantity - amount) >= -Numbers.EPSILON; useless....
 		if (quantity > amount){
 			quantity = amount; // prevent negative values due to rounding errors
 		}

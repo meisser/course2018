@@ -20,6 +20,10 @@ public class SubStock extends AbstractStockWrapper implements ISubStock {
 
 	@Override
 	public void remove(double quantity) {
+		assert quantity >= 0.0;
+		if (quantity > getAmount()){
+			quantity = getAmount(); // prevent negative values due to rounding errors
+		}
 		super.remove(quantity);
 		this.amount -= quantity;
 		this.ensureMinimum();
