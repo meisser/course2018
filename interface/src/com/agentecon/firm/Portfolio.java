@@ -1,5 +1,6 @@
 package com.agentecon.firm;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -88,11 +89,11 @@ public class Portfolio implements Cloneable {
 	}
 
 	public Collection<Ticker> getPositionTickers() {
-		return inv.keySet();
+		return new ArrayList<>(inv.keySet());
 	}
 
 	public Collection<Position> getPositions() {
-		return inv.values();
+		return new ArrayList<>(inv.values());
 	}
 
 	public Position getPosition(Ticker ticker) {
