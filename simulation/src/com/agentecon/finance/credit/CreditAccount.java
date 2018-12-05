@@ -68,7 +68,7 @@ public class CreditAccount extends AbstractStockWrapper {
 			}
 			creditUsed += quantity;
 		}
-		assert creditUsed <= creditLimit;
+		assert creditUsed <= creditLimit + Numbers.EPSILON;
 	}
 
 	@Override
