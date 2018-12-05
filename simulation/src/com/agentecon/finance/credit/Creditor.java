@@ -8,6 +8,8 @@ import com.agentecon.goods.IStock;
 import com.agentecon.market.IMarketStatistics;
 
 public class Creditor {
+	
+	public static final double MAX_CREDIT = 1000000000;
 
 	private AgentRef owner;
 	private Portfolio collateral;
@@ -24,7 +26,7 @@ public class Creditor {
 			double portfolioValue = collateral.calculateValue(stats);
 			this.account.setCreditLimit(Double.MAX_VALUE);
 			bankWallet.transfer(this.account, interest * account.getCreditUsed());
-			this.account.setCreditLimit((1.0 - haircut) * portfolioValue);
+			this.account.setCreditLimit(Math.min(MAX_CREDIT, (1.0 - haircut) * portfolioValue));
 		} else {
 			throw new CreditorBankruptException(account.getCreditUsed());
 		}
