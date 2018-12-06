@@ -21,15 +21,15 @@ public class TradingPortfolio extends Portfolio {
 	public TradingPortfolio(IStock money, boolean consumer) {
 		super(money, consumer);
 	}
-	
+
 	public double getCreditUsed() {
 		if (wallet instanceof CreditAccount) {
-			return ((CreditAccount)wallet).getCreditUsed();
+			return ((CreditAccount) wallet).getCreditUsed();
 		} else {
 			return 0.0;
 		}
 	}
-	
+
 	public double getLeverageRatio(double haircut) {
 		double creditUsed = getCreditUsed();
 		double moneyAvailable = getAvailableBudget();
@@ -58,9 +58,11 @@ public class TradingPortfolio extends Portfolio {
 	public double sell(Ticker ticker, IStockMarket stocks, IAgent owner, double fraction) {
 		double moneyBefore = wallet.getAmount();
 		Position pos = inv.get(ticker);
-		stocks.sell(owner, pos, getWallet(), pos.getAmount() * fraction);
-		if (pos.isEmpty()) {
-			disposePosition(ticker);
+		if (pos != null) {
+			stocks.sell(owner, pos, getWallet(), pos.getAmount() * fraction);
+			if (pos.isEmpty()) {
+				disposePosition(ticker);
+			}
 		}
 		return wallet.getAmount() - moneyBefore;
 	}
@@ -88,7 +90,7 @@ public class TradingPortfolio extends Portfolio {
 			Position pos = any == null ? null : getPosition(any);
 			if (pos == null) {
 				break;
-			} else if (pos.isEmpty()){
+			} else if (pos.isEmpty()) {
 				disposePosition(any);
 			} else {
 				Bid bid = stocks.getBid(any);
