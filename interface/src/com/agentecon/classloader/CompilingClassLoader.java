@@ -17,13 +17,6 @@ public class CompilingClassLoader extends RemoteLoader {
 		this.compiler = new AgentCompiler(null, source);
 	}
 
-	@Deprecated
-	public CompilingClassLoader(RemoteLoader parent, SimulationHandle source) throws SocketTimeoutException, IOException {
-		super(parent, source);
-		this.compiler = new AgentCompiler(parent, source);
-		parent.registerSubloader(this);
-	}
-	
 	CompilingClassLoader(RemoteLoader parent, SimulationHandle source, boolean dummy) throws SocketTimeoutException, IOException {
 		super(parent, source);
 		this.compiler = new AgentCompiler(parent, source);

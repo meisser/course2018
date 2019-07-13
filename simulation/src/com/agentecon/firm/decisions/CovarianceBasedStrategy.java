@@ -10,8 +10,6 @@ package com.agentecon.firm.decisions;
 
 import com.agentecon.util.MovingCovariance;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * Responsible for financial planning and steering the firms size by adjusting its leverage and its dividends.
  */
@@ -78,7 +76,7 @@ public class CovarianceBasedStrategy implements IFirmDecisions {
 
 	@Override
 	public IFirmDecisions duplicate() {
-		throw new NotImplementedException();
+		throw new RuntimeException("Not implemented");
 	}
 
 }

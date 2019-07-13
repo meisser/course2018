@@ -11,16 +11,13 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-import javax.tools.DiagnosticListener;
 import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
-import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.JavaFileObject.Kind;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
 
 public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager> {
 
@@ -28,20 +25,11 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 	private HashMap<String, ByteArrayOutputStream> byteCode;
 	private RemoteLoader parent;
 
-	public SourceFileManager(RemoteLoader parent, SimulationHandle handle, DiagnosticListener<JavaFileObject> listener) {
-		super(findCompiler(listener).getStandardFileManager(listener, null, null));
+	public SourceFileManager(JavaFileManager standard, RemoteLoader parent, SimulationHandle handle) {
+		super(standard);
 		this.handle = handle;
 		this.parent = parent;
 		this.byteCode = new HashMap<>();
-	}
-
-	private static JavaCompiler findCompiler(DiagnosticListener<JavaFileObject> listener) {
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		if (compiler == null) {
-			throw new RuntimeException("Java compiler not found. This is needed to dynamically load agents. See meissereconomics.com/course/setup for how to properly setup the JDK in eclipse.");
-		} else {
-			return compiler;
-		}
 	}
 
 	@Override
@@ -55,7 +43,8 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 	}
 
 	@Override
-	public Iterable<JavaFileObject> list(Location location, String packageName, Set<Kind> kinds, boolean recurse) throws IOException {
+	public Iterable<JavaFileObject> list(Location location, String packageName, Set<Kind> kinds, boolean recurse)
+			throws IOException {
 		Iterable<JavaFileObject> objects = super.list(location, packageName, kinds, recurse);
 		if (packageName.startsWith("com.agentecon")) {
 			assert !recurse; // not supported yet and does not seem necessary
@@ -100,19 +89,23 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 
 	private SimpleJavaFileObject getJavaSourceFile(String name) {
 		assert !name.endsWith(".java");
-		return new SimpleJavaFileObject(URI.create(name.replace(".", "/") + ".java"), Kind.SOURCE) {
-			@Override
-			public InputStream openInputStream() throws IOException {
-				return handle.openInputStream(name);
-			}
-
-			@Override
-			public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
-				try (InputStream source = openInputStream()) {
-					return new String(readData(source));
+		if (name.contentEquals("module-info")) {
+			return null;
+		} else {
+			return new SimpleJavaFileObject(URI.create(name.replace(".", "/") + ".java"), Kind.SOURCE) {
+				@Override
+				public InputStream openInputStream() throws IOException {
+					return handle.openInputStream(name);
 				}
-			}
-		};
+
+				@Override
+				public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+					try (InputStream source = openInputStream()) {
+						return new String(readData(source));
+					}
+				}
+			};
+		}
 	}
 
 	public static byte[] readData(InputStream source) throws IOException {
@@ -163,20 +156,22 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 
 	@Override
 	public boolean hasLocation(Location location) {
-		StandardLocation loc = (StandardLocation) location;
-		switch (loc) {
-		case CLASS_OUTPUT:
-		case SOURCE_PATH:
-		case CLASS_PATH:
+		if (location == StandardLocation.CLASS_PATH) {
 			return true;
-		default:
+		} else if (location == StandardLocation.CLASS_OUTPUT) {
+			return true;
+		} else if (location == StandardLocation.SOURCE_PATH) {
+			return true;
+		} else {
 			return super.hasLocation(location);
 		}
 	}
 
 	@Override
 	public JavaFileObject getJavaFileForInput(Location location, String className, Kind kind) throws IOException {
-		if (location.equals(StandardLocation.SOURCE_PATH) && kind == Kind.SOURCE) {
+		if (location.getName().startsWith(StandardLocation.SYSTEM_MODULES.getName())) {
+			return super.getJavaFileForInput(location, className, kind);
+		} else if (location.equals(StandardLocation.SOURCE_PATH) && kind == Kind.SOURCE) {
 			return getJavaSourceFile(className);
 		} else if (byteCode.containsKey(className) && kind == Kind.CLASS) {
 			return getClassFile(className, byteCode.get(className).toByteArray());
@@ -188,7 +183,8 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 	}
 
 	@Override
-	public JavaFileObject getJavaFileForOutput(Location location, final String className, Kind kind, FileObject sibling) throws IOException {
+	public JavaFileObject getJavaFileForOutput(Location location, final String className, Kind kind, FileObject sibling)
+			throws IOException {
 		assert kind == Kind.CLASS;
 		return getClassFileOutput(className);
 	}
@@ -227,7 +223,8 @@ public class SourceFileManager extends ForwardingJavaFileManager<JavaFileManager
 		throw new RuntimeException("not implemented");
 	}
 
-	public FileObject getFileForOutput(Location location, String packageName, String relativeName, FileObject sibling) throws IOException {
+	public FileObject getFileForOutput(Location location, String packageName, String relativeName, FileObject sibling)
+			throws IOException {
 		throw new RuntimeException("not implemented");
 	}
 

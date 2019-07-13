@@ -8,6 +8,7 @@
  */
 package com.agentecon.classloader;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,24 +17,23 @@ import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
-import javax.tools.ToolProvider;
 import javax.tools.JavaFileObject.Kind;
+import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
+import javax.tools.ToolProvider;
 
 public class AgentCompiler implements DiagnosticListener<JavaFileObject> {
 
 	private JavaCompiler compiler;
+	private StandardJavaFileManager standard;
 	private SourceFileManager manager;
-	
-	public AgentCompiler(SimulationHandle source) {
-		this(null, source);
-	}
 
 	public AgentCompiler(RemoteLoader simulationJar, SimulationHandle source) {
 		this.compiler = ToolProvider.getSystemJavaCompiler();
-		this.manager = new SourceFileManager(simulationJar, source, this);
+		this.standard = compiler.getStandardFileManager(this, null, null);
+		this.manager = new SourceFileManager(standard, simulationJar, source);
 	}
-	
+
 	public boolean alreadyCompiledClass(String name) {
 		return manager.getByteCode(name) != null;
 	}
@@ -44,7 +44,8 @@ public class AgentCompiler implements DiagnosticListener<JavaFileObject> {
 			if (byteCode == null) {
 				JavaFileObject object = manager.getJavaFileForInput(StandardLocation.SOURCE_PATH, name, Kind.SOURCE);
 				System.out.println("Compiling " + name);
-				boolean success = this.compiler.getTask(null, manager, this, Arrays.asList("-cp","loaded.jar","-g"), null, Collections.singleton(object)).call();
+				boolean success = this.compiler.getTask(null, manager, this, Arrays.asList("-cp", "loaded.jar", "-g"),
+						null, Collections.singleton(object)).call();
 				assert success;
 				byteCode = manager.getByteCode(name);
 			}
@@ -63,11 +64,17 @@ public class AgentCompiler implements DiagnosticListener<JavaFileObject> {
 
 	@Override
 	public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
-		if (diagnostic.getKind() == javax.tools.Diagnostic.Kind.ERROR) { 
-			throw new CompilerRuntimeException(diagnostic.toString());
+		if (diagnostic.getKind() == javax.tools.Diagnostic.Kind.ERROR) {
+			System.out.println("Compiler error: " + diagnostic);
+//			throw new CompilerRuntimeException(diagnostic.toString());
 		} else {
 			System.out.println("Compiler warns: " + diagnostic);
 		}
+	}
+
+	public static void main(String[] args) throws ClassNotFoundException, IOException {
+		AgentCompiler comp = new AgentCompiler(null, new LocalSimulationHandle(true));
+		System.out.println(comp.findClass("com.agentecon.Simulation").length);
 	}
 
 }
